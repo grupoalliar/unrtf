@@ -228,13 +228,6 @@ static void attr_express_begin(int attr, char *param)
 		op_begin_std_fontsize(op, atoi(param));
 		break;
 
-  case ATTR_LINE_HEIGHT:
-		if (safe_printf(1, op->line_height_begin, param))
-		{
-			fprintf(stderr, TOO_MANY_ARGS, "line_height_begin");
-		};
-		break;
-
 	case ATTR_HIDDEN_TEXT:
 		if (safe_printf(0, op->hidden_text_begin))
 		{
@@ -403,13 +396,6 @@ static void attr_express_end(int attr, char *param)
 
 	case ATTR_FONTSIZE:
 		op_end_std_fontsize(op, atoi(param));
-		break;
-
-	case ATTR_LINE_HEIGHT:
-		if (safe_printf(0, op->line_height_end))
-		{
-			fprintf(stderr, TOO_MANY_ARGS, "line_height_end");
-		};
 		break;
 
 	case ATTR_HIDDEN_TEXT:

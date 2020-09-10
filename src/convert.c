@@ -1393,32 +1393,6 @@ cmd_cf(Word *w, int align, char has_param, int num)
 }
 
 /*========================================================================
- * Name:	cmd_sl
- * Purpose:	Executes the \sl command.
- * Args:	Word, paragraph align info, and numeric param if any.
- * Returns:	Flag, true only if rest of Words on line should be ignored.
- *=======================================================================*/
-
-static int
-cmd_sl(Word *w, int align, char has_param, int num)
-{
-  int default_height = 240;
-	char str[30];
-
-	if (!has_param)
-	{
-		return FALSE;
-	}
-
-  float height = (float)num/default_height;
-
-	snprintf(str, 30, "%.2f", height);
-	attr_push(ATTR_LINE_HEIGHT, str);
-
-	return FALSE;
-}
-
-/*========================================================================
  * Name:	cmd_sb
  * Purpose:	Executes the \sb command.
  * Args:	Word, paragraph align info, and numeric param if any.
@@ -3640,7 +3614,6 @@ static HashItem hashArray_r [] =
 static HashItem hashArray_s [] =
 {
 	{ "s", cmd_s, "style" },
-	{ "sl", cmd_sl, NULL },
 //	{ "sb", cmd_sb, NULL },
 //	{ "sa", cmd_sa, NULL },
 	{ "sect", &cmd_sect, "section break"},

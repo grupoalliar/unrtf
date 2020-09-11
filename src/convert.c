@@ -4030,10 +4030,14 @@ static void
 starting_paragraph_align(int align, char* space_before, char* space_after, char* line_height)
 {
 	char sl_str[30];
+	char sa_str[30];
 	int default_height = 240;
    	float height = (float)atoi(line_height)/default_height;
+	float added_margin = (height - 1) * 12;
+	int margin_bottom = atoi(space_after) + added_margin;
 
  	snprintf(sl_str, 30, "%.2f", height);
+	snprintf(sa_str, 30, "%d", margin_bottom);
 
 	if (within_header && align != ALIGN_LEFT)
 	{
@@ -4043,7 +4047,7 @@ starting_paragraph_align(int align, char* space_before, char* space_after, char*
 	switch (align)
 	{
 	case ALIGN_CENTER:
-		if (safe_printf(3, op->center_begin, space_before, space_after, sl_str))
+		if (safe_printf(3, op->center_begin, space_before, sa_str, sl_str))
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "center_begin");
 		}
@@ -4051,13 +4055,13 @@ starting_paragraph_align(int align, char* space_before, char* space_after, char*
 	case ALIGN_LEFT:
 		break;
 	case ALIGN_RIGHT:
-		if (safe_printf(3, op->align_right_begin, space_before, space_after, sl_str))
+		if (safe_printf(3, op->align_right_begin, space_before, sa_str, sl_str))
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "align_right_begin");
 		}
 		break;
 	case ALIGN_JUSTIFY:
-		if (safe_printf(3, op->justify_begin, space_before, space_after, sl_str))
+		if (safe_printf(3, op->justify_begin, space_before, sa_str, sl_str))
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "justify_begin");    /* But this is correct */
 		}

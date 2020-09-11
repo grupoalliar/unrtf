@@ -4485,6 +4485,7 @@ word_print_core(Word *w, int groupdepth)
 						paragraph_align = ALIGN_LEFT;
             snprintf(space_before, 30, "%d", 0);
             snprintf(space_after, 30, "%d", 0);
+			snprintf(line_height, 30, "%d", 240);
             paragraph_begined = FALSE;
 					}
 					/*----Table keywords---------------------------------------------------------*/

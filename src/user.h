@@ -154,8 +154,6 @@
 	DEFS_ARRAY_ENTRY(fonttable_end, op),\
 	DEFS_ARRAY_ENTRY(fonttable_fontnr, op),\
 	DEFS_ARRAY_ENTRY(fonttable_fontname, op),\
-	DEFS_ARRAY_ENTRY(line_height_begin, op),\
-	DEFS_ARRAY_ENTRY(line_height_end, op),\
 	DEFS_ARRAY_ENTRY(hidden_text_begin, op),\
 	DEFS_ARRAY_ENTRY(hidden_text_end, op),\
 	{0, 0} /* That must be at the end of array */ \

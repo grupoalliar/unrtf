@@ -219,8 +219,6 @@ typedef struct
 
   char *hidden_text_begin;
   char *hidden_text_end;
-  char *line_height_begin;
-  char *line_height_end;
 
 	/* XX These should really be replaced by references
 	 * to one of the charsets.

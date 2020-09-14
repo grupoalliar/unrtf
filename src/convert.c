@@ -1393,32 +1393,6 @@ cmd_cf(Word *w, int align, char has_param, int num)
 }
 
 /*========================================================================
- * Name:	cmd_sl
- * Purpose:	Executes the \sl command.
- * Args:	Word, paragraph align info, and numeric param if any.
- * Returns:	Flag, true only if rest of Words on line should be ignored.
- *=======================================================================*/
-
-static int
-cmd_sl(Word *w, int align, char has_param, int num)
-{
-  int default_height = 240;
-	char str[30];
-
-	if (!has_param)
-	{
-		return FALSE;
-	}
-
-  float height = (float)num/default_height;
-
-	snprintf(str, 30, "%.2f", height);
-	attr_push(ATTR_LINE_HEIGHT, str);
-
-	return FALSE;
-}
-
-/*========================================================================
  * Name:	cmd_sb
  * Purpose:	Executes the \sb command.
  * Args:	Word, paragraph align info, and numeric param if any.
@@ -3640,7 +3614,6 @@ static HashItem hashArray_r [] =
 static HashItem hashArray_s [] =
 {
 	{ "s", cmd_s, "style" },
-	{ "sl", cmd_sl, NULL },
 //	{ "sb", cmd_sb, NULL },
 //	{ "sa", cmd_sa, NULL },
 	{ "sect", &cmd_sect, "section break"},
@@ -4054,8 +4027,17 @@ starting_text()
  *=======================================================================*/
 
 static void
-starting_paragraph_align(int align, char* space_before, char* space_after)
+starting_paragraph_align(int align, char* space_before, char* space_after, char* line_height)
 {
+	char sl_str[30];
+	char padding[30];
+	int default_height = 240;
+   	float height = (float)atoi(line_height)/default_height;
+	float added_margin = (height - 1) * 12;
+
+ 	snprintf(sl_str, 30, "%.2f", height);
+	snprintf(padding, 30, "%.0f", added_margin);
+
 	if (within_header && align != ALIGN_LEFT)
 	{
 		starting_body();
@@ -4064,7 +4046,7 @@ starting_paragraph_align(int align, char* space_before, char* space_after)
 	switch (align)
 	{
 	case ALIGN_CENTER:
-		if (safe_printf(2, op->center_begin, space_before, space_after))
+		if (safe_printf(4, op->center_begin, space_before, space_after, sl_str, padding))
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "center_begin");
 		}
@@ -4072,13 +4054,13 @@ starting_paragraph_align(int align, char* space_before, char* space_after)
 	case ALIGN_LEFT:
 		break;
 	case ALIGN_RIGHT:
-		if (safe_printf(2, op->align_right_begin, space_before, space_after))
+		if (safe_printf(4, op->align_right_begin, space_before, space_after, sl_str,padding))
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "align_right_begin");
 		}
 		break;
 	case ALIGN_JUSTIFY:
-		if (safe_printf(2, op->justify_begin, space_before, space_after))
+		if (safe_printf(4, op->justify_begin, space_before, space_after, sl_str,padding))
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "justify_begin");    /* But this is correct */
 		}
@@ -4222,12 +4204,14 @@ word_print_core(Word *w, int groupdepth)
 	int is_cell_group = FALSE;
 	int paragraph_begined = FALSE;
 	int paragraph_align = ALIGN_LEFT;
-  char space_before[30];
-  char space_after[30];
+	char space_before[30];
+	char space_after[30];
+	char line_height[30];
 	const char *p; /* Start of parameter */
 
 	snprintf(space_before, 30, "%d", 0);
 	snprintf(space_after, 30, "%d", 0);
+	snprintf(line_height, 30, "%d", 240);
 
 	if (groupdepth > MAX_GROUP_DEPTH)
 	{
@@ -4274,7 +4258,7 @@ word_print_core(Word *w, int groupdepth)
 
 					if (!paragraph_begined)
 					{
-						starting_paragraph_align(paragraph_align, space_before, space_after);
+						starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
 						paragraph_begined = TRUE;
 					}
 
@@ -4428,28 +4412,40 @@ word_print_core(Word *w, int groupdepth)
 					s++;
 					/*----Paragraph spacing------------------------------------------------------*/
 					if (!strncmp("sb", s, 2))
-          {
-            while (*s && (!isdigit(*s) && *s != '-'))
-            {
-              s++;
-            }
-            if (*s && (isdigit(*s) || *s == '-'))
-            {
-              int r = atoi(s)/20;
-              snprintf(space_before, 30, "%d", r);
-            }
+					{
+						while (*s && (!isdigit(*s) && *s != '-'))
+						{
+							s++;
+						}
+						if (*s && (isdigit(*s) || *s == '-'))
+						{
+							int r = atoi(s)/20;
+							snprintf(space_before, 30, "%d", r);
+						}
 					}
 					else if (!strncmp("sa", s, 2))
 					{
-            while (*s && (!isdigit(*s) && *s != '-'))
-            {
-              s++;
-            }
-            if (*s && (isdigit(*s) || *s == '-'))
-            {
-              int r = atoi(s)/20;
-              snprintf(space_after, 30, "%d", r);
-            }
+						while (*s && (!isdigit(*s) && *s != '-'))
+						{
+							s++;
+						}
+						if (*s && (isdigit(*s) || *s == '-'))
+						{
+							int r = atoi(s)/20;
+							snprintf(space_after, 30, "%d", r);
+						}
+					}
+					else if (!strncmp("sl", s, 2) && strncmp("slmult", s, 6))
+					{
+						while (*s && (!isdigit(*s) && *s != '-'))
+						{
+							s++;
+						}
+						if (*s && (isdigit(*s) || *s == '-'))
+						{
+							int r = atoi(s);
+							snprintf(line_height, 30, "%d", r);							
+						}
 					}
 					/*----Paragraph alignment----------------------------------------------------*/
 					if (!strcmp("ql", s))
@@ -4489,6 +4485,7 @@ word_print_core(Word *w, int groupdepth)
 						paragraph_align = ALIGN_LEFT;
             snprintf(space_before, 30, "%d", 0);
             snprintf(space_after, 30, "%d", 0);
+			snprintf(line_height, 30, "%d", 240);
             paragraph_begined = FALSE;
 					}
 					/*----Table keywords---------------------------------------------------------*/
@@ -4563,7 +4560,7 @@ word_print_core(Word *w, int groupdepth)
               {
                 if (!paragraph_begined)
                 {
-                  starting_paragraph_align(paragraph_align, space_before, space_after);
+                  starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
                   paragraph_begined = TRUE;
                 }
 
@@ -4609,7 +4606,7 @@ word_print_core(Word *w, int groupdepth)
 			{
         if (!paragraph_begined || !have_printed_body)
         {
-          starting_paragraph_align(paragraph_align, space_before, space_after);
+          starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
           paragraph_begined = TRUE;
         }
 				word_print_core(child, groupdepth + 1);

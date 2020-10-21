@@ -1645,6 +1645,15 @@ cmd_field(Word *w, int align, char has_param, int num)
 							}
 							else
 							{
+								while (w3)
+								{
+									s = word_string(w3);
+									if (s && s[0] != '\\')
+									{
+										print_with_special_exprs(s);
+									}
+									w3 = w3->next;
+								}
 								return FALSE;
 							}
 							w3 = w3->next;

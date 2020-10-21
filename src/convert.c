@@ -4525,6 +4525,15 @@ word_print_core(Word *w, int groupdepth)
 					{
 
 						is_cell_group = TRUE;
+						if (have_printed_row_end)
+						{
+							if (safe_printf(0, op->table_row_begin))
+							{
+								fprintf(stderr, TOO_MANY_ARGS, "table_row_begin");
+							}
+							have_printed_row_begin = TRUE;
+							have_printed_row_end = FALSE;
+						}
 						if (!have_printed_cell_begin)
 						{
 							/* Need this with empty cells */

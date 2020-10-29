@@ -210,6 +210,7 @@ void print_with_special_exprs(const char *s);
 
 static int banner_printed = FALSE;
 
+int table_align = ALIGN_LEFT;
 
 /*========================================================================
  * Name:	print_banner
@@ -4005,9 +4006,32 @@ starting_text()
 		}
 		if (!have_printed_cell_begin)
 		{
-			if (safe_printf(0, op->table_cell_begin))
+			switch (table_align)
 			{
-				fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+			case ALIGN_CENTER:
+				if (safe_printf(1, op->table_cell_begin, "center"))
+				{
+					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+				}
+				break;
+			case ALIGN_LEFT:
+				if (safe_printf(1, op->table_cell_begin, "left"))
+				{
+					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+				}
+				break;
+			case ALIGN_RIGHT:
+				if (safe_printf(1, op->table_cell_begin, "right"))
+				{
+					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+				}
+				break;
+			case ALIGN_JUSTIFY:
+				if (safe_printf(1, op->table_cell_begin, "justify"))
+				{
+					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+				}
+				break;
 			}
 			attrstack_express_all();
 			have_printed_cell_begin = TRUE;
@@ -4256,7 +4280,7 @@ word_print_core(Word *w, int groupdepth)
 					starting_body();
 					starting_text();
 
-					if (!paragraph_begined)
+					if (!paragraph_begined && !within_table) 
 					{
 						starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
 						paragraph_begined = TRUE;
@@ -4451,18 +4475,22 @@ word_print_core(Word *w, int groupdepth)
 					if (!strcmp("ql", s))
 					{
 						paragraph_align = ALIGN_LEFT;
+						table_align = paragraph_align;
 					}
 					else if (!strcmp("qr", s))
 					{
 						paragraph_align = ALIGN_RIGHT;
+						table_align = paragraph_align;
 					}
 					else if (!strcmp("qj", s))
 					{
 						paragraph_align = ALIGN_JUSTIFY;
+						table_align = paragraph_align;
 					}
 					else if (!strcmp("qc", s))
 					{
 						paragraph_align = ALIGN_CENTER;
+						table_align = paragraph_align;
 					}
 					else if (!strcmp("plain", s))
 					{
@@ -4481,8 +4509,12 @@ word_print_core(Word *w, int groupdepth)
 
 						/* Clear out all paragraph attributes.
 						 */
-            ending_paragraph_align(paragraph_align);
+						if (!within_table) 
+						{
+							ending_paragraph_align(paragraph_align);
+						}
 						paragraph_align = ALIGN_LEFT;
+						table_align = paragraph_align;
             snprintf(space_before, 30, "%d", 0);
             snprintf(space_after, 30, "%d", 0);
 			snprintf(line_height, 30, "%d", 240);
@@ -4493,6 +4525,15 @@ word_print_core(Word *w, int groupdepth)
 					{
 
 						is_cell_group = TRUE;
+						if (have_printed_row_end)
+						{
+							if (safe_printf(0, op->table_row_begin))
+							{
+								fprintf(stderr, TOO_MANY_ARGS, "table_row_begin");
+							}
+							have_printed_row_begin = TRUE;
+							have_printed_row_end = FALSE;
+						}
 						if (!have_printed_cell_begin)
 						{
 							/* Need this with empty cells */
@@ -4558,7 +4599,7 @@ word_print_core(Word *w, int groupdepth)
 
 							if (hip->func)
               {
-                if (!paragraph_begined)
+                if (!paragraph_begined && !within_table)
                 {
                   starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
                   paragraph_begined = TRUE;
@@ -4604,7 +4645,7 @@ word_print_core(Word *w, int groupdepth)
 
 			if (child)
 			{
-        if (!paragraph_begined || !have_printed_body)
+        if ((!paragraph_begined || !have_printed_body) && !within_table)
         {
           starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
           paragraph_begined = TRUE;
@@ -4654,7 +4695,7 @@ word_print_core(Word *w, int groupdepth)
 
 	/* Undo paragraph alignment
 	 */
-	if (paragraph_begined)
+	if (paragraph_begined && !within_table)
 	{
 		ending_paragraph_align(paragraph_align);
 	}

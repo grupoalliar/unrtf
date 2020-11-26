@@ -212,6 +212,10 @@ static int banner_printed = FALSE;
 
 int table_align = ALIGN_LEFT;
 
+// TODO Verify global variables
+char td_width[30];
+int temp_width = 0;
+
 /*========================================================================
  * Name:	print_banner
  * Purpose:	Writes program-identifying text to the output stream.
@@ -2962,6 +2966,15 @@ static int cmd_mac(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+static int cmd_cellx(Word *w, int align, char has_param, int param)
+{
+	if(!within_table){
+		param = (param + (15-1))/15;
+		temp_width = temp_width + param;
+		return FALSE;
+	}
+}
+
 /*========================================================================
  * Name:	cmd_colortbl
  * Purpose:	Executes the \colortbl command.
@@ -3464,7 +3477,7 @@ static HashItem hashArray_c [] =
 	{ "cols", NULL, "columns (not implemented)" },
 	{ "column", NULL, "column break (not implemented)" },
 	{ "cbpat", NULL, "Paragraph Shading" },
-	{ "cellx", NULL, "Table Definitions" },
+	{ "cellx", cmd_cellx, "Table Definitions" },
 	{ "cfpat", NULL, NULL },
 	{ "cgrid", NULL, NULL },
 	{ "charrsid", NULL, "Revision Mark (ignore)" },
@@ -3911,9 +3924,10 @@ begin_table()
 	have_printed_cell_begin = FALSE;
 	have_printed_row_end = FALSE;
 	have_printed_cell_end = FALSE;
+	snprintf(td_width, 30, "%i", temp_width);
 	attrstack_push();
 	starting_body();
-	if (safe_printf(0, op->table_begin))
+	if (safe_printf(1, op->table_begin,td_width))
 	{
 		fprintf(stderr, TOO_MANY_ARGS, "table_begin");
 	}

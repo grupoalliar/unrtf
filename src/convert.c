@@ -2972,6 +2972,7 @@ static int cmd_cellx(Word *w, int align, char has_param, int param)
 		temp_width = param;
 		return FALSE;
 	}
+	return FALSE;
 }
 
 /*========================================================================

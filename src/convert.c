@@ -1,4 +1,3 @@
-
 /*===========================================================================
    GNU UnRTF, a command-line program to convert RTF documents to other formats.
    Copyright (C) 2000,2001,2004 Zachary Thayer Smith
@@ -2970,7 +2969,7 @@ static int cmd_cellx(Word *w, int align, char has_param, int param)
 {
 	if(!within_table){
 		param = (param + (15-1))/15;
-		temp_width = temp_width + param;
+		temp_width = param;
 		return FALSE;
 	}
 }
@@ -3924,6 +3923,7 @@ begin_table()
 	have_printed_cell_begin = FALSE;
 	have_printed_row_end = FALSE;
 	have_printed_cell_end = FALSE;
+	temp_width = ( temp_width*100 + (857 - 1))/857;
 	snprintf(td_width, 30, "%i", temp_width);
 	attrstack_push();
 	starting_body();

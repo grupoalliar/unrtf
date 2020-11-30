@@ -212,9 +212,14 @@ static int banner_printed = FALSE;
 int table_align = ALIGN_LEFT;
 
 // TODO Verify global variables
-char td_width[30];
+char table_width[30];
+char td_width_string[30];
 int temp_width = 0;
-
+int table_width_percent = 0;
+int contador = 0;
+int contador_td = 0;
+int td_width_percent = 0;
+int td_width[30];
 /*========================================================================
  * Name:	print_banner
  * Purpose:	Writes program-identifying text to the output stream.
@@ -2967,9 +2972,21 @@ static int cmd_mac(Word *w, int align, char has_param, int param)
 
 static int cmd_cellx(Word *w, int align, char has_param, int param)
 {
+	/* printf("######");
+	const char *str = word_string(w);
+	printf("str = %s ",str);
+	printf("param = %i ",param);
+	printf("align = %i ", align);
+	printf("has_param = %c ", has_param);
+	printf("######");
+		 */
 	if(!within_table){
-		param = (param + (15-1))/15;
 		temp_width = param;
+		return FALSE;
+	} else if (within_table && !have_printed_row_begin)
+	{
+		td_width[contador] = param;
+		contador++;
 		return FALSE;
 	}
 	return FALSE;
@@ -3924,11 +3941,11 @@ begin_table()
 	have_printed_cell_begin = FALSE;
 	have_printed_row_end = FALSE;
 	have_printed_cell_end = FALSE;
-	temp_width = ( temp_width*100 + (857 - 1))/857;
-	snprintf(td_width, 30, "%i", temp_width);
+	table_width_percent = (temp_width * 100 + (10200 - 1)) / 10200;
+	snprintf(table_width, 30, "%i", table_width_percent);
 	attrstack_push();
 	starting_body();
-	if (safe_printf(1, op->table_begin,td_width))
+	if (safe_printf(1, op->table_begin,table_width))
 	{
 		fprintf(stderr, TOO_MANY_ARGS, "table_begin");
 	}
@@ -4021,31 +4038,37 @@ starting_text()
 		}
 		if (!have_printed_cell_begin)
 		{
+			td_width_percent = (td_width[contador_td] * 100 + (temp_width - 1)) / temp_width;
+			snprintf(td_width_string, 30, "%i", td_width_percent);
 			switch (table_align)
 			{
 			case ALIGN_CENTER:
-				if (safe_printf(1, op->table_cell_begin, "center"))
+				if (safe_printf(2, op->table_cell_begin, "center",td_width_string))
 				{
 					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 				}
+				contador_td++;
 				break;
 			case ALIGN_LEFT:
-				if (safe_printf(1, op->table_cell_begin, "left"))
+				if (safe_printf(2, op->table_cell_begin, "left",td_width_string))
 				{
 					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 				}
+				contador_td++;
 				break;
 			case ALIGN_RIGHT:
-				if (safe_printf(1, op->table_cell_begin, "right"))
+				if (safe_printf(2, op->table_cell_begin, "right",td_width_string))
 				{
 					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 				}
+				contador_td++;
 				break;
 			case ALIGN_JUSTIFY:
-				if (safe_printf(1, op->table_cell_begin, "justify"))
+				if (safe_printf(2, op->table_cell_begin, "justify",td_width_string))
 				{
 					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 				}
+				contador_td++;
 				break;
 			}
 			attrstack_express_all();
@@ -4577,6 +4600,7 @@ word_print_core(Word *w, int groupdepth)
 							}
 							have_printed_row_begin = FALSE;
 							have_printed_row_end = TRUE;
+							contador_td = 0;
 						}
 						else
 						{

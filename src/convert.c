@@ -2973,14 +2973,14 @@ static int cmd_mac(Word *w, int align, char has_param, int param)
 
 static int cmd_cellx(Word *w, int align, char has_param, int param)
 {
-	/* printf("######");
-	const char *str = word_string(w);
-	printf("str = %s ",str);
-	printf("param = %i ",param);
-	printf("align = %i ", align);
-	printf("has_param = %c ", has_param);
-	printf("######");
-		 */
+	// printf("######");
+	// const char *str = word_string(w);
+	// printf("str = %s ",str);
+	// printf("param = %i ",param);
+	// printf("align = %i ", align);
+	// printf("has_param = %c ", has_param);
+	// printf("######");
+		 
 
 	if (param > 10200)
 	{
@@ -4597,10 +4597,50 @@ word_print_core(Word *w, int groupdepth)
 						}
 						if (!have_printed_cell_begin)
 						{
-							/* Need this with empty cells */
-							if (safe_printf(0, op->table_cell_begin))
+							if(first_row)
 							{
-								fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+								first_row = FALSE;
+								contador = 0;
+							}
+							if (contador_td == 0)
+							{
+								td_width_percent = (td_width[contador_td] * 100 + (temp_width - 1)) / temp_width;
+								snprintf(td_width_string, 30, "%i", td_width_percent);
+							} else
+							{
+								td_width_percent = ((td_width[contador_td] - td_width[contador_td - 1]) * 100 + (temp_width - 1)) / temp_width;
+								snprintf(td_width_string, 30, "%i", td_width_percent);
+							}
+							switch (table_align)
+							{
+								case ALIGN_CENTER:
+									if (safe_printf(2, op->table_cell_begin, "center",td_width_string))
+									{
+										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+									}
+									contador_td++;
+									break;
+								case ALIGN_LEFT:
+									if (safe_printf(2, op->table_cell_begin, "left",td_width_string))
+									{
+										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+									}
+									contador_td++;
+									break;
+								case ALIGN_RIGHT:
+									if (safe_printf(2, op->table_cell_begin, "right",td_width_string))
+									{
+										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+									}
+									contador_td++;
+									break;
+								case ALIGN_JUSTIFY:
+									if (safe_printf(2, op->table_cell_begin, "justify",td_width_string))
+									{
+										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+									}
+									contador_td++;
+									break;
 							}
 							attrstack_express_all();
 						}

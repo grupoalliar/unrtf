@@ -220,6 +220,7 @@ int contador = 0;
 int contador_td = 0;
 int td_width_percent = 0;
 int td_width[30];
+int first_row = FALSE;
 /*========================================================================
  * Name:	print_banner
  * Purpose:	Writes program-identifying text to the output stream.
@@ -2980,14 +2981,23 @@ static int cmd_cellx(Word *w, int align, char has_param, int param)
 	printf("has_param = %c ", has_param);
 	printf("######");
 		 */
-	if(!within_table){
-		temp_width = param;
-		return FALSE;
-	} else if (within_table && !have_printed_row_begin)
+
+	if (param > 10200)
 	{
+		param = 10200;
+	}
+	if (!within_table)
+	{
+		temp_width = param;
 		td_width[contador] = param;
 		contador++;
-		return FALSE;
+		first_row = TRUE;
+	}
+	else if (within_table && !have_printed_row_begin)
+	{
+		first_row = FALSE;
+		td_width[contador] = param;
+		contador++;
 	}
 	return FALSE;
 }
@@ -3988,6 +3998,7 @@ end_table()
 		have_printed_cell_begin = FALSE;
 		have_printed_row_end = FALSE;
 		have_printed_cell_end = FALSE;
+		contador = 0;
 	}
 }
 
@@ -4038,8 +4049,20 @@ starting_text()
 		}
 		if (!have_printed_cell_begin)
 		{
-			td_width_percent = (td_width[contador_td] * 100 + (temp_width - 1)) / temp_width;
-			snprintf(td_width_string, 30, "%i", td_width_percent);
+			if(first_row)
+			{
+				first_row = FALSE;
+				contador = 0;
+			}
+			if (contador_td == 0)
+			{
+				td_width_percent = (td_width[contador_td] * 100 + (temp_width - 1)) / temp_width;
+				snprintf(td_width_string, 30, "%i", td_width_percent);
+			} else
+			{
+				td_width_percent = ((td_width[contador_td] - td_width[contador_td - 1]) * 100 + (temp_width - 1)) / temp_width;
+				snprintf(td_width_string, 30, "%i", td_width_percent);
+			}
 			switch (table_align)
 			{
 			case ALIGN_CENTER:

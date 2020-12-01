@@ -206,6 +206,7 @@ static const char *hyperlink_base = NULL;
 void starting_body();
 void starting_text();
 void print_with_special_exprs(const char *s);
+int percentage_calculation(int value, int one_hundred_percent);
 
 static int banner_printed = FALSE;
 
@@ -2971,17 +2972,15 @@ static int cmd_mac(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+/*========================================================================
+ * Name:	cmd_cellx
+ * Purpose:	Executes the \cellx command.
+ * Args:	Word, paragraph align info, and numeric param if any.
+ * Returns:	
+ *=======================================================================*/
+
 static int cmd_cellx(Word *w, int align, char has_param, int param)
 {
-	// printf("######");
-	// const char *str = word_string(w);
-	// printf("str = %s ",str);
-	// printf("param = %i ",param);
-	// printf("align = %i ", align);
-	// printf("has_param = %c ", has_param);
-	// printf("######");
-		 
-
 	if (param > 10200)
 	{
 		param = 10200;
@@ -4056,38 +4055,38 @@ starting_text()
 			}
 			if (contador_td == 0)
 			{
-				td_width_percent = (td_width[contador_td] * 100 + (temp_width - 1)) / temp_width;
+				td_width_percent = percentage_calculation(td_width[contador_td], temp_width);
 				snprintf(td_width_string, 30, "%i", td_width_percent);
 			} else
 			{
-				td_width_percent = ((td_width[contador_td] - td_width[contador_td - 1]) * 100 + (temp_width - 1)) / temp_width;
+				td_width_percent = percentage_calculation(td_width[contador_td] - td_width[contador_td - 1], temp_width);
 				snprintf(td_width_string, 30, "%i", td_width_percent);
 			}
 			switch (table_align)
 			{
 			case ALIGN_CENTER:
-				if (safe_printf(2, op->table_cell_begin, "center",td_width_string))
+				if (safe_printf(2, op->table_cell_begin, "center", td_width_string))
 				{
 					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 				}
 				contador_td++;
 				break;
 			case ALIGN_LEFT:
-				if (safe_printf(2, op->table_cell_begin, "left",td_width_string))
+				if (safe_printf(2, op->table_cell_begin, "left", td_width_string))
 				{
 					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 				}
 				contador_td++;
 				break;
 			case ALIGN_RIGHT:
-				if (safe_printf(2, op->table_cell_begin, "right",td_width_string))
+				if (safe_printf(2, op->table_cell_begin, "right", td_width_string))
 				{
 					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 				}
 				contador_td++;
 				break;
 			case ALIGN_JUSTIFY:
-				if (safe_printf(2, op->table_cell_begin, "justify",td_width_string))
+				if (safe_printf(2, op->table_cell_begin, "justify", td_width_string))
 				{
 					fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 				}
@@ -4101,8 +4100,20 @@ starting_text()
 	}
 }
 
+/*========================================================================
+ * Name: percentage_calculation
+ * Purpose: Percentage calculation
+ * Args:	value and one_hundred_percent.
+ * Returns:	percentage.
+ *=======================================================================*/
 
-
+ int
+ percentage_calculation(int value, int one_hundred_percent)
+ {
+	int percentage;
+	percentage = (value * 100 + (one_hundred_percent - 1)) / one_hundred_percent;
+	return percentage;
+ }
 
 /*========================================================================
  * Name:
@@ -4604,38 +4615,38 @@ word_print_core(Word *w, int groupdepth)
 							}
 							if (contador_td == 0)
 							{
-								td_width_percent = (td_width[contador_td] * 100 + (temp_width - 1)) / temp_width;
+								td_width_percent = percentage_calculation(td_width[contador_td], temp_width);
 								snprintf(td_width_string, 30, "%i", td_width_percent);
 							} else
 							{
-								td_width_percent = ((td_width[contador_td] - td_width[contador_td - 1]) * 100 + (temp_width - 1)) / temp_width;
+								td_width_percent = percentage_calculation(td_width[contador_td] - td_width[contador_td - 1], temp_width);
 								snprintf(td_width_string, 30, "%i", td_width_percent);
 							}
 							switch (table_align)
 							{
 								case ALIGN_CENTER:
-									if (safe_printf(2, op->table_cell_begin, "center",td_width_string))
+									if (safe_printf(2, op->table_cell_begin, "center", td_width_string))
 									{
 										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 									}
 									contador_td++;
 									break;
 								case ALIGN_LEFT:
-									if (safe_printf(2, op->table_cell_begin, "left",td_width_string))
+									if (safe_printf(2, op->table_cell_begin, "left", td_width_string))
 									{
 										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 									}
 									contador_td++;
 									break;
 								case ALIGN_RIGHT:
-									if (safe_printf(2, op->table_cell_begin, "right",td_width_string))
+									if (safe_printf(2, op->table_cell_begin, "right", td_width_string))
 									{
 										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 									}
 									contador_td++;
 									break;
 								case ALIGN_JUSTIFY:
-									if (safe_printf(2, op->table_cell_begin, "justify",td_width_string))
+									if (safe_printf(2, op->table_cell_begin, "justify", td_width_string))
 									{
 										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
 									}

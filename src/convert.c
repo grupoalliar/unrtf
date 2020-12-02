@@ -212,7 +212,6 @@ static int banner_printed = FALSE;
 
 int table_align = ALIGN_LEFT;
 
-// TODO Verify global variables
 char table_width[30];
 char td_width_string[30];
 int temp_width = 0;

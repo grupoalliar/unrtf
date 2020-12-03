@@ -146,7 +146,6 @@ static int have_printed_row_end = FALSE;
 static int have_printed_cell_end = FALSE;
 static void check_for_table();
 
-
 /* Previously in word_print_core function
  */
 static int total_chars_this_line = 0; /* for simulating \tab */
@@ -207,6 +206,8 @@ void starting_body();
 void starting_text();
 void print_with_special_exprs(const char *s);
 int percentage_calculation(int value, int one_hundred_percent);
+void print_table();
+
 
 static int banner_printed = FALSE;
 
@@ -696,13 +697,13 @@ Word *read_font_decl(Word *w)
 
 	/* Read font number ('\fxx'). There can be an optional <themefont>
 	   entry (e.g. '\flomajor') before the font number */
-	for (i = 0; i < 2; i++) 
+	for (i = 0; i < 2; i++)
 	{
 		tmp = word_string(w);
 		if (!tmp || strlen(tmp) < 3 || strncmp("\\f", tmp, 2))
 		{
 			return 0;
-		}            
+		}
 		if (isdigit(tmp[2]))
 		{
 			num = atoi(&tmp[2]);
@@ -767,7 +768,7 @@ Word *read_font_decl(Word *w)
 	}
 
 	/* We probably read the semi-colon, remove it from the font name */
-	{ 
+	{
 		char *t = strchr(name, ';');
 		if (t)
 			*t = 0;
@@ -877,7 +878,7 @@ process_font_table(Word *w)
 		}
 	}
 
-	if (!quiet) 
+	if (!quiet)
 	{
 		if (safe_printf(0, op->comment_begin))
 		{
@@ -2975,7 +2976,7 @@ static int cmd_mac(Word *w, int align, char has_param, int param)
  * Name:	cmd_cellx
  * Purpose:	Executes the \cellx command.
  * Args:	Word, paragraph align info, and numeric param if any.
- * Returns:	
+ * Returns:
  *=======================================================================*/
 
 static int cmd_cellx(Word *w, int align, char has_param, int param)
@@ -3949,7 +3950,7 @@ begin_table()
 	have_printed_cell_begin = FALSE;
 	have_printed_row_end = FALSE;
 	have_printed_cell_end = FALSE;
-	table_width_percent = (temp_width * 100 + (10200 - 1)) / 10200;
+	table_width_percent = percentage_calculation(temp_width, 10200);
 	snprintf(table_width, 30, "%i", table_width_percent);
 	attrstack_push();
 	starting_body();
@@ -4047,20 +4048,7 @@ starting_text()
 		}
 		if (!have_printed_cell_begin)
 		{
-			if(first_row)
-			{
-				first_row = FALSE;
-				contador = 0;
-			}
-			if (contador_td == 0)
-			{
-				td_width_percent = percentage_calculation(td_width[contador_td], temp_width);
-				snprintf(td_width_string, 30, "%i", td_width_percent);
-			} else
-			{
-				td_width_percent = percentage_calculation(td_width[contador_td] - td_width[contador_td - 1], temp_width);
-				snprintf(td_width_string, 30, "%i", td_width_percent);
-			}
+			print_table();
 			switch (table_align)
 			{
 			case ALIGN_CENTER:
@@ -4351,7 +4339,7 @@ word_print_core(Word *w, int groupdepth)
 					starting_body();
 					starting_text();
 
-					if (!paragraph_begined && !within_table) 
+					if (!paragraph_begined && !within_table)
 					{
 						starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
 						paragraph_begined = TRUE;
@@ -4539,7 +4527,7 @@ word_print_core(Word *w, int groupdepth)
 						if (*s && (isdigit(*s) || *s == '-'))
 						{
 							int r = atoi(s);
-							snprintf(line_height, 30, "%d", r);							
+							snprintf(line_height, 30, "%d", r);
 						}
 					}
 					/*----Paragraph alignment----------------------------------------------------*/
@@ -4580,7 +4568,7 @@ word_print_core(Word *w, int groupdepth)
 
 						/* Clear out all paragraph attributes.
 						 */
-						if (!within_table) 
+						if (!within_table)
 						{
 							ending_paragraph_align(paragraph_align);
 						}
@@ -4607,20 +4595,7 @@ word_print_core(Word *w, int groupdepth)
 						}
 						if (!have_printed_cell_begin)
 						{
-							if(first_row)
-							{
-								first_row = FALSE;
-								contador = 0;
-							}
-							if (contador_td == 0)
-							{
-								td_width_percent = percentage_calculation(td_width[contador_td], temp_width);
-								snprintf(td_width_string, 30, "%i", td_width_percent);
-							} else
-							{
-								td_width_percent = percentage_calculation(td_width[contador_td] - td_width[contador_td - 1], temp_width);
-								snprintf(td_width_string, 30, "%i", td_width_percent);
-							}
+							print_table();
 							switch (table_align)
 							{
 								case ALIGN_CENTER:
@@ -4859,7 +4834,7 @@ word_print(Word *w)
 		}
 	}
 
-	if (!quiet) 
+	if (!quiet)
 	{
 		print_banner();
 	}
@@ -4881,5 +4856,22 @@ word_print(Word *w)
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "document_end");
 		}
+	}
+}
+
+void print_table(){
+	if(first_row)
+	{
+		first_row = FALSE;
+		contador = 0;
+	}
+	if (contador_td == 0)
+	{
+		td_width_percent = percentage_calculation(td_width[contador_td], temp_width);
+		snprintf(td_width_string, 30, "%i", td_width_percent);
+	} else
+	{
+		td_width_percent = percentage_calculation(td_width[contador_td] - td_width[contador_td - 1], temp_width);
+		snprintf(td_width_string, 30, "%i", td_width_percent);
 	}
 }

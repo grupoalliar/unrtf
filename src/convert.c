@@ -2982,22 +2982,18 @@ static int cmd_mac(Word *w, int align, char has_param, int param)
 static int cmd_cellx(Word *w, int align, char has_param, int param)
 {
 	if (param > 10200)
-	{
 		param = 10200;
-	}
+
 	if (!within_table)
 	{
 		temp_width = param;
-		td_width[contador] = param;
-		contador++;
 		first_row = TRUE;
 	}
 	else if (within_table && !have_printed_row_begin)
-	{
 		first_row = FALSE;
-		td_width[contador] = param;
-		contador++;
-	}
+
+	td_width[contador] = param;
+	contador++;
 	return FALSE;
 }
 

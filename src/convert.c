@@ -19,6 +19,7 @@
    The maintainer is reachable by electronic mail at daved@physiol.usyd.edu.au
 ===========================================================================*/
 
+
 /*----------------------------------------------------------------------
  * Module name:    convert
  * Author name:    Zachary Smith
@@ -145,9 +146,11 @@ static int have_printed_row_end = FALSE;
 static int have_printed_cell_end = FALSE;
 static void check_for_table();
 
+
 /* Previously in word_print_core function
  */
 static int total_chars_this_line = 0; /* for simulating \tab */
+
 
 /* Paragraph alignment (kludge)
  */
@@ -159,10 +162,13 @@ enum
 	ALIGN_JUSTIFY
 };
 
+
+
 /* This value is set by attr_push and attr_pop
  */
 int simulate_smallcaps;
 int simulate_allcaps;
+
 
 /* Most pictures must be written to files. */
 enum
@@ -193,20 +199,23 @@ static int EndNoteCitations = FALSE;
 static int have_printed_body = FALSE;
 static int within_header = TRUE;
 
+
 static const char *hyperlink_base = NULL;
+
 
 void starting_body();
 void starting_text();
 void print_with_special_exprs(const char *s);
 int percentage_calculation(int value, int one_hundred_percent);
-void table_printer();
 
 static int banner_printed = FALSE;
 
 int table_align = ALIGN_LEFT;
+
 char table_width[30];
 char td_width_string[30];
 int temp_width = 0;
+int table_width_percent = 0;
 int contador = 0;
 int contador_td = 0;
 int td_width_percent = 0;
@@ -219,7 +228,8 @@ int first_row = FALSE;
  * Returns:	None.
  *=======================================================================*/
 
-void print_banner()
+void
+print_banner()
 {
 	if (!banner_printed)
 	{
@@ -238,6 +248,7 @@ void print_banner()
 	banner_printed = TRUE;
 }
 
+
 /*========================================================================
  * Name:	starting_body
  * Purpose:	Switches output stream for writing document contents.
@@ -245,7 +256,8 @@ void print_banner()
  * Returns:	None.
  *=======================================================================*/
 
-void starting_body()
+void
+starting_body()
 {
 	if (!have_printed_body)
 	{
@@ -265,42 +277,40 @@ void starting_body()
 	}
 }
 
+
 /*-------------------------------------------------------------------*/
 /*-------------------------------------------------------------------*/
 /*-------------------------------------------------------------------*/
 
+
 static char *month_strings[12] =
-		{
+{
 #ifdef ENGLISH
-				"January", "February", "March", "April", "May", "June", "July", "August",
-				"September", "October", "November", "December"
+	"January", "February", "March", "April", "May", "June", "July", "August",
+	"September", "October", "November", "December"
 #endif
 #ifdef FRANCAIS
-																						"Janvier",
-				"Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre",
-				"Octobre", "Novembre", "Decembre"
+	"Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre",
+	"Octobre", "Novembre", "Decembre"
 #endif
 #ifdef ITALIANO
-															 "Gennaio",
-				"Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
-				"Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
+	"Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+	"Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
 #endif
 #ifdef ESPANOL /* amaral - 0.19.2 */
-																																"Enero",
-				"Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
-				"Septiembre", "Octubre", "Noviembre", "Diciembre"
+	"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
+	"Septiembre", "Octubre", "Noviembre", "Diciembre"
 #endif
-#ifdef DEUTSCH /* daved - 0.21.6 */
-																							"Januar",
-				"Februar", "März", "April", "Mai", "Juni", "Juli", "August",
-				"September", "Oktober", "November", "Dezember"
+#ifdef DEUTSCH  /* daved - 0.21.6 */
+	"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August",
+	"September", "Oktober", "November", "Dezember"
 #endif
 #ifdef PORTUGUES /* amaral - 0.19.2 */
-																						"Janeiro",
-				"Fevereiro", "Marco", "Abril", "Maio", "Junho", "Julho", "Agosto",
-				"Setembro", "Outubro", "Novembro", "Dezembro"
+	"Janeiro", "Fevereiro", "Marco", "Abril", "Maio", "Junho", "Julho", "Agosto",
+	"Setembro", "Outubro", "Novembro", "Dezembro"
 #endif
 };
+
 
 /*========================================================================
  * Name:	word_dump_date
@@ -310,7 +320,8 @@ static char *month_strings[12] =
  * Returns:	None.
  *=======================================================================*/
 
-void word_dump_date(Word *w)
+void
+word_dump_date(Word *w)
 {
 	int year = 0, month = 0, day = 0, hour = 0, minute = 0;
 	CHECK_PARAM_NOT_NULL(w);
@@ -363,6 +374,8 @@ void word_dump_date(Word *w)
 	}
 }
 
+
+
 /*-------------------------------------------------------------------*/
 
 typedef struct
@@ -413,6 +426,7 @@ maybeopeniconv()
 		set_current_encoding(encoding);
 	}
 }
+
 
 /*========================================================================
  * Name:	lookup_font
@@ -682,20 +696,18 @@ Word *read_font_decl(Word *w)
 
 	/* Read font number ('\fxx'). There can be an optional <themefont>
 	   entry (e.g. '\flomajor') before the font number */
-	for (i = 0; i < 2; i++)
+	for (i = 0; i < 2; i++) 
 	{
 		tmp = word_string(w);
 		if (!tmp || strlen(tmp) < 3 || strncmp("\\f", tmp, 2))
 		{
 			return 0;
-		}
+		}            
 		if (isdigit(tmp[2]))
 		{
 			num = atoi(&tmp[2]);
 			break;
-		}
-		else if (i == 1)
-		{
+		} else if (i == 1) {
 			return 0;
 		}
 		w = w->next;
@@ -755,7 +767,7 @@ Word *read_font_decl(Word *w)
 	}
 
 	/* We probably read the semi-colon, remove it from the font name */
-	{
+	{ 
 		char *t = strchr(name, ';');
 		if (t)
 			*t = 0;
@@ -813,7 +825,8 @@ Word *read_font_decl(Word *w)
  * Returns:	None.
  *=======================================================================*/
 
-void process_font_table(Word *w)
+void
+process_font_table(Word *w)
 {
 	CHECK_PARAM_NOT_NULL(w);
 
@@ -864,7 +877,7 @@ void process_font_table(Word *w)
 		}
 	}
 
-	if (!quiet)
+	if (!quiet) 
 	{
 		if (safe_printf(0, op->comment_begin))
 		{
@@ -889,7 +902,7 @@ void process_font_table(Word *w)
 		for (i = 0; i < total_fonts; i++)
 		{
 			printf(" font %d = %s encoding = %s\n", font_table[i].num,
-						 font_table[i].name, font_table[i].encoding);
+			       font_table[i].name, font_table[i].encoding);
 		}
 
 		if (safe_printf(0, op->comment_end))
@@ -899,6 +912,7 @@ void process_font_table(Word *w)
 	}
 }
 
+
 /*========================================================================
  * Name:	process_index_entry
  * Purpose:	Processes an index entry of an RTF file.
@@ -906,7 +920,8 @@ void process_font_table(Word *w)
  * Returns:	None.
  *=======================================================================*/
 
-void process_index_entry(Word *w)
+void
+process_index_entry(Word *w)
 {
 	Word *w2;
 
@@ -935,6 +950,7 @@ void process_index_entry(Word *w)
 	}
 }
 
+
 /*========================================================================
  * Name:	process_toc_entry
  * Purpose:	Processes an index entry of an RTF file.
@@ -942,7 +958,8 @@ void process_index_entry(Word *w)
  * Returns:	None.
  *=======================================================================*/
 
-void process_toc_entry(Word *w, int include_page_num)
+void
+process_toc_entry(Word *w, int include_page_num)
 {
 	Word *w2;
 
@@ -962,8 +979,8 @@ void process_toc_entry(Word *w, int include_page_num)
 					fprintf(stderr, TOO_MANY_ARGS, "comment_begin");
 				}
 				printf("toc %s entry word: %s ",
-							 include_page_num ? "page#" : "no page#",
-							 str);
+				       include_page_num ? "page#" : "no page#",
+				       str);
 				if (safe_printf(0, op->comment_end))
 				{
 					fprintf(stderr, TOO_MANY_ARGS, "comment_end");
@@ -974,6 +991,7 @@ void process_toc_entry(Word *w, int include_page_num)
 	}
 }
 
+
 /*========================================================================
  * Name:	process_info_group
  * Purpose:	Processes the \info group of an RTF file.
@@ -981,7 +999,8 @@ void process_toc_entry(Word *w, int include_page_num)
  * Returns:	None.
  *=======================================================================*/
 
-void process_info_group(Word *w)
+void
+process_info_group(Word *w)
 {
 	Word *child;
 
@@ -1260,6 +1279,7 @@ typedef struct
 static Color color_table[MAX_COLORS];
 static int total_colors = 0;
 
+
 /*========================================================================
  * Name:	process_color_table
  * Purpose:	Processes the color table of an RTF file.
@@ -1267,7 +1287,8 @@ static int total_colors = 0;
  * Returns:	None.
  *=======================================================================*/
 
-void process_color_table(Word *w)
+void
+process_color_table(Word *w)
 {
 	int r, g, b;
 
@@ -1312,30 +1333,30 @@ void process_color_table(Word *w)
 			}
 		}
 		else
-				/* If we find the semicolon which denotes the end of
+			/* If we find the semicolon which denotes the end of
 			 * a color entry then store the color, even if we don't
 			 * have all of it.
 			 */
-				if (!strcmp(";", s))
-		{
-			color_table[total_colors].r = r;
-			color_table[total_colors].g = g;
-			color_table[total_colors++].b = b;
-			if (debug_mode)
+			if (!strcmp(";", s))
 			{
-				if (safe_printf(0, op->comment_begin))
+				color_table[total_colors].r = r;
+				color_table[total_colors].g = g;
+				color_table[total_colors++].b = b;
+				if (debug_mode)
 				{
-					fprintf(stderr, TOO_MANY_ARGS, "comment_begin");
+					if (safe_printf(0, op->comment_begin))
+					{
+						fprintf(stderr, TOO_MANY_ARGS, "comment_begin");
+					}
+					printf("storing color entry %d: %02x%02x%02x",
+					       total_colors - 1, r, g, b);
+					if (safe_printf(0, op->comment_end))
+					{
+						fprintf(stderr, TOO_MANY_ARGS, "comment_end");
+					}
 				}
-				printf("storing color entry %d: %02x%02x%02x",
-							 total_colors - 1, r, g, b);
-				if (safe_printf(0, op->comment_end))
-				{
-					fprintf(stderr, TOO_MANY_ARGS, "comment_end");
-				}
+				r = g = b = 0;
 			}
-			r = g = b = 0;
-		}
 
 		w = w->next;
 	}
@@ -1373,9 +1394,9 @@ cmd_cf(Word *w, int align, char has_param, int num)
 	else
 	{
 		snprintf(str, 40, "#%02x%02x%02x",
-						 color_table[num].r,
-						 color_table[num].g,
-						 color_table[num].b);
+				 color_table[num].r,
+				 color_table[num].g,
+				 color_table[num].b);
 		attr_push(ATTR_FOREGROUND, str);
 	}
 	return FALSE;
@@ -1468,13 +1489,14 @@ cmd_cb(Word *w, int align, char has_param, int num)
 	else
 	{
 		snprintf(str, 40, "#%02x%02x%02x",
-						 color_table[num].r,
-						 color_table[num].g,
-						 color_table[num].b);
+				 color_table[num].r,
+				 color_table[num].g,
+				 color_table[num].b);
 		attr_push(ATTR_BACKGROUND, str);
 	}
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_fs
@@ -1500,6 +1522,7 @@ cmd_fs(Word *w, int align, char has_param, int points)
 
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_field
@@ -1538,6 +1561,7 @@ cmd_field(Word *w, int align, char has_param, int num)
 			}
 #endif
 
+
 			if (!strcmp("\\*", s))
 			{
 				w2 = child->next;
@@ -1567,7 +1591,7 @@ cmd_field(Word *w, int align, char has_param, int num)
 								char_num = atoi(s4);
 
 								string = op_translate_char(op,
-																					 FONT_SYMBOL, char_num);
+								                           FONT_SYMBOL, char_num);
 								if (string != NULL)
 								{
 									printf("%s", string);
@@ -1627,6 +1651,7 @@ cmd_field(Word *w, int align, char has_param, int num)
 									}
 									return TRUE;
 								}
+
 							}
 							else
 							{
@@ -1637,6 +1662,7 @@ cmd_field(Word *w, int align, char has_param, int num)
 					}
 					w2 = w2->next;
 				}
+
 			}
 		}
 		w = w->next;
@@ -1738,13 +1764,15 @@ cmd_highlight(Word *w, int align, char has_param, int num)
 	else
 	{
 		snprintf(str, 40, "#%02x%02x%02x",
-						 color_table[num].r,
-						 color_table[num].g,
-						 color_table[num].b);
+		        color_table[num].r,
+		        color_table[num].g,
+		        color_table[num].b);
 		attr_push(ATTR_BACKGROUND, str);
 	}
 	return FALSE;
 }
+
+
 
 /*========================================================================
  * Name:	cmd_tab
@@ -1776,6 +1804,7 @@ cmd_tab(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_plain
  * Purpose:	Executes the \plain command.
@@ -1790,6 +1819,7 @@ cmd_plain(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_fnil
  * Purpose:	Executes the \fnil command.
@@ -1803,6 +1833,8 @@ cmd_fnil(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
+
 /*========================================================================
  * Name:	cmd_froman
  * Purpose:	Executes the \froman command.
@@ -1815,6 +1847,7 @@ cmd_froman(Word *w, int align, char has_param, int param)
 	attr_push(ATTR_FONTFACE, FONTROMAN_STR);
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_fswiss
@@ -1830,6 +1863,7 @@ cmd_fswiss(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_fmodern
  * Purpose:	Executes the \fmodern command.
@@ -1843,6 +1877,7 @@ cmd_fmodern(Word *w, int align, char has_param, int param)
 	attr_push(ATTR_FONTFACE, FONTMODERN_STR);
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_fscript
@@ -1912,6 +1947,7 @@ cmd_expand(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_emboss
  * Purpose:	Executes the \embo command.
@@ -1936,6 +1972,7 @@ cmd_emboss(Word *w, int align, char has_param, int param)
 	}
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_engrave
@@ -1981,6 +2018,7 @@ cmd_caps(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_scaps
  * Purpose:	Executes the \scaps command.
@@ -2000,6 +2038,7 @@ cmd_scaps(Word *w, int align, char has_param, int param)
 	}
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_bullet
@@ -2041,6 +2080,7 @@ cmd_ldblquote(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_rdblquote
  * Purpose:	Executes the \rdblquote command.
@@ -2062,6 +2102,7 @@ cmd_rdblquote(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_lquote
  * Purpose:	Executes the \lquote command.
@@ -2081,6 +2122,7 @@ cmd_lquote(Word *w, int align, char has_param, int param)
 	}
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_nonbreaking_space
@@ -2103,6 +2145,7 @@ cmd_nonbreaking_space(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_nonbreaking_hyphen
  * Purpose:	Executes the nonbreaking hyphen command.
@@ -2123,6 +2166,7 @@ cmd_nonbreaking_hyphen(Word *w, int align, char has_param, int param)
 	}
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_optional_hyphen
@@ -2145,6 +2189,7 @@ cmd_optional_hyphen(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_emdash
  * Purpose:	Executes the \emdash command.
@@ -2164,6 +2209,7 @@ cmd_emdash(Word *w, int align, char has_param, int param)
 	}
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_endash
@@ -2186,6 +2232,7 @@ cmd_endash(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_rquote
  * Purpose:	Executes the \rquote command.
@@ -2207,6 +2254,7 @@ cmd_rquote(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_par
  * Purpose:	Executes the \par command.
@@ -2226,6 +2274,7 @@ cmd_par(Word *w, int align, char has_param, int param)
 	}
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_line
@@ -2248,6 +2297,7 @@ cmd_line(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_page
  * Purpose:	Executes the \page command.
@@ -2268,6 +2318,7 @@ static int cmd_page(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_intbl
  * Purpose:	Executes the \intbl command.
@@ -2283,6 +2334,7 @@ static int cmd_intbl(Word *w, int align, char has_param, int param)
 
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_ulnone
@@ -2351,6 +2403,7 @@ static int cmd_uldb(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_uldash
  * Purpose:	Executes the \uldash command.
@@ -2363,6 +2416,7 @@ static int cmd_uldash(Word *w, int align, char has_param, int param)
 	attr_push(ATTR_DASH_UL, NULL);
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_uldashd
@@ -2377,6 +2431,7 @@ static int cmd_uldashd(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_uldashdd
  * Purpose:	Executes the \uldashdd command.
@@ -2389,6 +2444,7 @@ static int cmd_uldashdd(Word *w, int align, char has_param, int param)
 	attr_push(ATTR_2DOT_DASH_UL, NULL);
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_ulw
@@ -2403,6 +2459,7 @@ static int cmd_ulw(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_ulth
  * Purpose:	Executes the \ulth command.
@@ -2415,6 +2472,7 @@ static int cmd_ulth(Word *w, int align, char has_param, int param)
 	attr_push(ATTR_THICK_UL, NULL);
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_ulthd
@@ -2429,6 +2487,7 @@ static int cmd_ulthd(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_ulthdash
  * Purpose:	Executes the \ulthdash command.
@@ -2442,6 +2501,7 @@ static int cmd_ulthdash(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_ulwave
  * Purpose:	Executes the \ulwave command.
@@ -2454,6 +2514,7 @@ static int cmd_ulwave(Word *w, int align, char has_param, int param)
 	attr_push(ATTR_WAVE_UL, NULL);
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_strike
@@ -2495,6 +2556,7 @@ static int cmd_strikedl(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_striked
  * Purpose:	Executes the \striked command.
@@ -2514,6 +2576,7 @@ static int cmd_striked(Word *w, int align, char has_param, int param)
 	}
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_rtf
@@ -2572,17 +2635,17 @@ static int cmd_u(Word *w, int align, char has_param, int param)
 	 *      and document have unicode character which value is greater than 65536
 	 */
 
-	short done = 0;
-	long unicode_number = (long)param; /* On 16bit architectures int is too small to store unicode characters. - AF */
-	char tmp[20];											 /* Number of characters that can be in int type (including '\0'). If int size is greater than 4 bytes change this value. - AF */
+	short	done = 0;
+	long unicode_number = (long) param; /* On 16bit architectures int is too small to store unicode characters. - AF */
+	char tmp[20]; /* Number of characters that can be in int type (including '\0'). If int size is greater than 4 bytes change this value. - AF */
 	const char *alias;
 #define DEBUG 0
 #if DEBUG
-	char *str;
+	char	*str;
 	if (has_param == TRUE)
 	{
 		fprintf(stderr, "param is %d (x%x) (0%o)\n", param,
-						param, param);
+		        param, param);
 	}
 	if (w->hash_index)
 	{
@@ -2912,24 +2975,28 @@ static int cmd_mac(Word *w, int align, char has_param, int param)
  * Name:	cmd_cellx
  * Purpose:	Executes the \cellx command.
  * Args:	Word, paragraph align info, and numeric param if any.
- * Returns:
+ * Returns:	
  *=======================================================================*/
 
 static int cmd_cellx(Word *w, int align, char has_param, int param)
 {
 	if (param > 10200)
+	{
 		param = 10200;
-
+	}
 	if (!within_table)
 	{
 		temp_width = param;
+		td_width[contador] = param;
+		contador++;
 		first_row = TRUE;
 	}
 	else if (within_table && !have_printed_row_begin)
+	{
 		first_row = FALSE;
-
-	td_width[contador] = param;
-	contador++;
+		td_width[contador] = param;
+		contador++;
+	}
 	return FALSE;
 }
 
@@ -3153,6 +3220,7 @@ static int cmd_picprop(Word *w, int align, char has_param, int param)
 	return TRUE;
 }
 
+
 /*========================================================================
  * Name:	cmd_bin
  * Purpose:	Executes the \bin command.
@@ -3164,6 +3232,7 @@ static int cmd_bin(Word *w, int align, char has_param, int param)
 {
 	return FALSE;
 }
+
 
 /*========================================================================
  * Name:	cmd_macpict
@@ -3325,6 +3394,7 @@ static int cmd_pich(Word *w, int align, char has_param, int param)
 	return FALSE;
 }
 
+
 /*========================================================================
  * Name:	cmd_xe
  * Purpose:	Executes the \xe (index entry) command.
@@ -3364,10 +3434,11 @@ static int cmd_tcn(Word *w, int align, char has_param, int param)
 	return TRUE;
 }
 
+
 /* All of the possible commands that RTF might recognize. */
-static HashItem hashArray_other[] =
-		{
-/* 0.21.7
+static HashItem hashArray_other [] =
+{
+	/* 0.21.7
 	 *	the "*" command was ignored in earlier versions, but included pictures
 	 *	seem to often start with \*\shppict{\pict so if "*" is ignored, so is
 	 *	the picture, so I have defined a new function "cmd_maybe_ignore" which
@@ -3377,23 +3448,25 @@ static HashItem hashArray_other[] =
 #if 0
 	{ "*", cmd_ignore, NULL },
 #else
-				{"*", cmd_maybe_ignore, NULL},
+	{ "*", cmd_maybe_ignore, NULL },
 #endif
-				{"-", cmd_optional_hyphen, "optional hyphen"},
-				{"_", cmd_nonbreaking_hyphen, "nonbreaking hyphen"},
-				{"~", cmd_nonbreaking_space, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_a[] =
-		{
-				{"ansi", &cmd_ansi, NULL},
-				{"ansicpg", &cmd_ansicpg, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_b[] =
-		{
-				{"b", &cmd_b, NULL},
-				{"bullet", &cmd_bullet, NULL},
-				{"bin", &cmd_bin, "picture is binary"},
-				{"blipuid", &cmd_blipuid, NULL},
+	{ "-", cmd_optional_hyphen, "optional hyphen" },
+	{ "_", cmd_nonbreaking_hyphen, "nonbreaking hyphen" },
+	{ "~", cmd_nonbreaking_space, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_a [] =
+{
+	{ "ansi", &cmd_ansi , NULL },
+	{ "ansicpg", &cmd_ansicpg , NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_b [] =
+{
+	{ "b", &cmd_b, NULL },
+	{ "bullet", &cmd_bullet, NULL },
+	{ "bin", &cmd_bin, "picture is binary" },
+	{ "blipuid", &cmd_blipuid, NULL },
 #if 0
 	{ "bgbdiag", NULL, NULL },
 	{ "bgcross", NULL, NULL },
@@ -3416,135 +3489,147 @@ static HashItem hashArray_b[] =
 	{ "brdrth", NULL, NULL },
 	{ "brdrw", NULL, NULL },
 #endif
-				{NULL, NULL, NULL}};
-static HashItem hashArray_c[] =
-		{
-				{"caps", &cmd_caps, NULL},
-				{"cb", cmd_cb, NULL},
-				{"cf", cmd_cf, NULL},
-				{"chcbpat", cmd_cb, NULL},
-				{"chcfpat", cmd_cf, NULL},
-				{"colortbl", &cmd_colortbl, "color table"},
-				{"cols", NULL, "columns (not implemented)"},
-				{"column", NULL, "column break (not implemented)"},
-				{"cbpat", NULL, "Paragraph Shading"},
-				{"cellx", cmd_cellx, "Table Definitions"},
-				{"cfpat", NULL, NULL},
-				{"cgrid", NULL, NULL},
-				{"charrsid", NULL, "Revision Mark (ignore)"},
-				{"clbgbcross", NULL, NULL},
-				{"clbgbdiag", NULL, NULL},
-				{"clbgbkbdiag", NULL, NULL},
-				{"clbgbkcross", NULL, NULL},
-				{"clbgbkdcross", NULL, NULL},
-				{"clbgbkfdiag", NULL, NULL},
-				{"clbgbkhor", NULL, NULL},
-				{"clbgbkvert", NULL, NULL},
-				{"clbgdcross", NULL, NULL},
-				{"clbgfdiag", NULL, NULL},
-				{"clbghoriz", NULL, NULL},
-				{"clbgvert", NULL, NULL},
-				{"clbrdrb", NULL, NULL},
-				{"clbrdrl", NULL, NULL},
-				{"clbrdrr", NULL, NULL},
-				{"clbrdrt", NULL, NULL},
-				{"clcbpat", NULL, NULL},
-				{"clcfpat", NULL, NULL},
-				{"clmgf", NULL, NULL},
-				{"clmrg", NULL, NULL},
-				{"clshdng", NULL, NULL},
-				{"cs", NULL, "character style (not implemented)"},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_d[] =
-		{
-				{"deff", cmd_deff, "Default Font"},
-				{"dn", &cmd_dn, NULL},
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_c [] =
+{
+	{ "caps", &cmd_caps, NULL },
+	{ "cb", cmd_cb, NULL },
+	{ "cf", cmd_cf, NULL },
+	{ "chcbpat", cmd_cb, NULL },
+	{ "chcfpat", cmd_cf, NULL },
+	{ "colortbl", &cmd_colortbl, "color table" },
+	{ "cols", NULL, "columns (not implemented)" },
+	{ "column", NULL, "column break (not implemented)" },
+	{ "cbpat", NULL, "Paragraph Shading" },
+	{ "cellx", cmd_cellx, "Table Definitions" },
+	{ "cfpat", NULL, NULL },
+	{ "cgrid", NULL, NULL },
+	{ "charrsid", NULL, "Revision Mark (ignore)" },
+	{ "clbgbcross", NULL, NULL },
+	{ "clbgbdiag", NULL, NULL },
+	{ "clbgbkbdiag", NULL, NULL },
+	{ "clbgbkcross", NULL, NULL },
+	{ "clbgbkdcross", NULL, NULL },
+	{ "clbgbkfdiag", NULL, NULL },
+	{ "clbgbkhor", NULL, NULL },
+	{ "clbgbkvert", NULL, NULL },
+	{ "clbgdcross", NULL, NULL },
+	{ "clbgfdiag", NULL, NULL },
+	{ "clbghoriz", NULL, NULL },
+	{ "clbgvert", NULL, NULL },
+	{ "clbrdrb", NULL, NULL },
+	{ "clbrdrl", NULL, NULL },
+	{ "clbrdrr", NULL, NULL },
+	{ "clbrdrt", NULL, NULL },
+	{ "clcbpat", NULL, NULL },
+	{ "clcfpat", NULL, NULL },
+	{ "clmgf", NULL, NULL },
+	{ "clmrg", NULL, NULL },
+	{ "clshdng", NULL, NULL },
+	{ "cs", NULL, "character style (not implemented)"},
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_d [] =
+{
+	{ "deff", cmd_deff, "Default Font" },
+	{ "dn", &cmd_dn, NULL },
 #if 0
 	{ "dibitmap", NULL, NULL },
 #endif
-				{NULL, NULL, NULL}};
-static HashItem hashArray_e[] =
-		{
-				{"emdash", cmd_emdash, NULL},
-				{"endash", cmd_endash, NULL},
-				{"embo", &cmd_emboss, NULL},
-				{"expand", &cmd_expand, NULL},
-				{"expnd", &cmd_expand, NULL},
-				{"emfblip", &cmd_emfblip, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_f[] =
-		{
-				{"f", cmd_f, NULL},
-				{"fdecor", cmd_fdecor, NULL},
-				{"fmodern", cmd_fmodern, NULL},
-				{"fnil", cmd_fnil, NULL},
-				{"fonttbl", cmd_fonttbl, "font table"},
-				{"froman", cmd_froman, NULL},
-				{"fs", cmd_fs, NULL},
-				{"fscript", cmd_fscript, NULL},
-				{"fswiss", cmd_fswiss, NULL},
-				{"ftech", cmd_ftech, NULL},
-				{"field", cmd_field, NULL},
-				{"footer", cmd_footer, NULL},
-				{"footerf", cmd_footerf, NULL},
-				{"footerl", cmd_footerl, NULL},
-				{"footerr", cmd_footerr, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_h[] =
-		{
-				{"highlight", &cmd_highlight, NULL},
-				{"header", cmd_header, NULL},
-				{"headerf", cmd_headerf, NULL},
-				{"headerl", cmd_headerl, NULL},
-				{"headerr", cmd_headerr, NULL},
-				{"hl", cmd_ignore, "hyperlink within object"},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_i[] =
-		{
-				{"i", &cmd_i, NULL},
-				{"info", &cmd_info, NULL},
-				{"insrsid", NULL, "Revision Mark (ignore)"},
-				{"intbl", &cmd_intbl, NULL},
-				{"impr", &cmd_engrave, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_j[] =
-		{
-				{"jpegblip", &cmd_jpegblip, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_l[] =
-		{
-				{"ldblquote", &cmd_ldblquote, NULL},
-				{"line", &cmd_line, NULL},
-				{"lquote", &cmd_lquote, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_m[] =
-		{
-				{"mac", &cmd_mac, NULL},
-				{"macpict", &cmd_macpict, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_n[] =
-		{
-				{"nosupersub", &cmd_nosupersub, NULL},
-				{"nonshppict", &cmd_ignore, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_o[] =
-		{
-				{"outl", &cmd_outl, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_p[] =
-		{
-				{"page", &cmd_page, NULL},
-				{"par", &cmd_par, NULL},
-				{"pc", &cmd_pc, NULL},
-				{"pca", &cmd_pca, NULL},
-				{"pich", &cmd_pich, NULL},
-				{"pict", &cmd_pict, "picture"},
-				{"picprop", &cmd_picprop, "picture properties"},
-				{"picw", &cmd_picw, NULL},
-				{"plain", &cmd_plain, NULL},
-				{"pngblip", &cmd_pngblip, NULL},
-				{"pnmetafile", &cmd_pnmetafile, NULL},
-				{"emfblip", &cmd_emfblip, NULL},
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_e [] =
+{
+	{ "emdash", cmd_emdash, NULL },
+	{ "endash", cmd_endash, NULL },
+	{ "embo", &cmd_emboss, NULL },
+	{ "expand", &cmd_expand, NULL },
+	{ "expnd", &cmd_expand, NULL },
+	{ "emfblip", &cmd_emfblip, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_f [] =
+{
+	{ "f", cmd_f, NULL },
+	{ "fdecor", cmd_fdecor, NULL },
+	{ "fmodern", cmd_fmodern, NULL },
+	{ "fnil", cmd_fnil, NULL },
+	{ "fonttbl", cmd_fonttbl, "font table" },
+	{ "froman", cmd_froman, NULL },
+	{ "fs", cmd_fs, NULL },
+	{ "fscript", cmd_fscript, NULL },
+	{ "fswiss", cmd_fswiss, NULL },
+	{ "ftech", cmd_ftech, NULL },
+	{ "field", cmd_field, NULL },
+	{ "footer", cmd_footer, NULL },
+	{ "footerf", cmd_footerf, NULL },
+	{ "footerl", cmd_footerl, NULL },
+	{ "footerr", cmd_footerr, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_h [] =
+{
+	{ "highlight", &cmd_highlight, NULL },
+	{ "header", cmd_header, NULL },
+	{ "headerf", cmd_headerf, NULL },
+	{ "headerl", cmd_headerl, NULL },
+	{ "headerr", cmd_headerr, NULL },
+	{ "hl", cmd_ignore, "hyperlink within object" },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_i [] =
+{
+	{ "i", &cmd_i, NULL },
+	{ "info", &cmd_info, NULL },
+	{ "insrsid", NULL, "Revision Mark (ignore)" },
+	{ "intbl", &cmd_intbl, NULL },
+	{ "impr", &cmd_engrave, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_j [] =
+{
+	{ "jpegblip", &cmd_jpegblip, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_l [] =
+{
+	{ "ldblquote", &cmd_ldblquote, NULL },
+	{ "line", &cmd_line, NULL },
+	{ "lquote", &cmd_lquote, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_m [] =
+{
+	{ "mac", &cmd_mac , NULL },
+	{ "macpict", &cmd_macpict, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_n [] =
+{
+	{ "nosupersub", &cmd_nosupersub, NULL },
+	{ "nonshppict", &cmd_ignore, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_o [] =
+{
+	{ "outl", &cmd_outl, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_p [] =
+{
+	{ "page", &cmd_page, NULL },
+	{ "par", &cmd_par, NULL },
+	{ "pc", &cmd_pc , NULL },
+	{ "pca", &cmd_pca , NULL },
+	{ "pich", &cmd_pich, NULL },
+	{ "pict", &cmd_pict, "picture" },
+	{ "picprop", &cmd_picprop, "picture properties" },
+	{ "picw", &cmd_picw, NULL },
+	{ "plain", &cmd_plain, NULL },
+	{ "pngblip", &cmd_pngblip, NULL },
+	{ "pnmetafile", &cmd_pnmetafile, NULL },
+	{ "emfblip", &cmd_emfblip, NULL },
 #if 0
 	{ "piccropb", NULL, NULL },
 	{ "piccropl", NULL, NULL },
@@ -3556,101 +3641,111 @@ static HashItem hashArray_p[] =
 	{ "picscalex", NULL, NULL },
 	{ "picwgoal", NULL, NULL },
 #endif
-				{NULL, NULL, NULL}};
-static HashItem hashArray_r[] =
-		{
-				{"rdblquote", &cmd_rdblquote, NULL},
-				{"rquote", &cmd_rquote, NULL},
-				{"rtf", &cmd_rtf, NULL},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_s[] =
-		{
-				{"s", cmd_s, "style"},
-				//	{ "sb", cmd_sb, NULL },
-				//	{ "sa", cmd_sa, NULL },
-				{"sect", &cmd_sect, "section break"},
-				{"scaps", &cmd_scaps, NULL},
-				{"super", &cmd_super, NULL},
-				{"sub", &cmd_sub, NULL},
-				{"shad", &cmd_shad, NULL},
-				{"strike", &cmd_strike, NULL},
-				{"striked", &cmd_striked, NULL},
-				{"strikedl", &cmd_strikedl, NULL},
-				{"stylesheet", &cmd_ignore, "style sheet"},
-				{"shp", cmd_shp, "drawn shape"},
-				{"shppict", &cmd_shppict, "shppict wrapper"},
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_r [] =
+{
+	{ "rdblquote", &cmd_rdblquote, NULL },
+	{ "rquote", &cmd_rquote, NULL },
+	{ "rtf", &cmd_rtf, NULL },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_s [] =
+{
+	{ "s", cmd_s, "style" },
+//	{ "sb", cmd_sb, NULL },
+//	{ "sa", cmd_sa, NULL },
+	{ "sect", &cmd_sect, "section break"},
+	{ "scaps", &cmd_scaps, NULL },
+	{ "super", &cmd_super, NULL },
+	{ "sub", &cmd_sub, NULL },
+	{ "shad", &cmd_shad, NULL },
+	{ "strike", &cmd_strike, NULL },
+	{ "striked", &cmd_striked, NULL },
+	{ "strikedl", &cmd_strikedl, NULL },
+	{ "stylesheet", &cmd_ignore, "style sheet" },
+	{ "shp", cmd_shp, "drawn shape" },
+	{ "shppict", &cmd_shppict, "shppict wrapper" },
 #if 0
 	{ "shading", NULL, NULL },
 #endif
-				{NULL, NULL, NULL}};
-static HashItem hashArray_t[] =
-		{
-				{"tab", &cmd_tab, NULL},
-				{"tc", cmd_tc, "TOC entry"},
-				{"tcn", cmd_tcn, "TOC entry"},
-				{"trowd", NULL, "start new row in table"},
-				{NULL, NULL, NULL}};
-static HashItem hashArray_u[] =
-		{
-				{"u", &cmd_u, NULL},
-				{"ul", &cmd_ul, NULL},
-				{"up", &cmd_up, NULL},
-				{"uld", &cmd_uld, NULL},
-				{"uldash", &cmd_uldash, NULL},
-				{"uldashd", &cmd_uldashd, NULL},
-				{"uldashdd", &cmd_uldashdd, NULL},
-				{"uldb", &cmd_uldb, NULL},
-				{"ulnone", &cmd_ulnone, NULL},
-				{"ulth", &cmd_ulth, NULL},
-				{"ulthd", &cmd_ulthd, NULL},
-				{"ulthdash", &cmd_ulthdash, NULL},
-				{"ulw", &cmd_ulw, NULL},
-				{"ulwave", &cmd_ulwave, NULL},
-				{NULL, NULL, NULL}};
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_t [] =
+{
+	{ "tab", &cmd_tab, NULL },
+	{ "tc", cmd_tc, "TOC entry" },
+	{ "tcn", cmd_tcn, "TOC entry" },
+	{ "trowd", NULL, "start new row in table" },
+	{ NULL, NULL, NULL}
+};
+static HashItem hashArray_u [] =
+{
+	{ "u", &cmd_u, NULL },
+	{ "ul", &cmd_ul, NULL },
+	{ "up", &cmd_up, NULL },
+	{ "uld", &cmd_uld, NULL },
+	{ "uldash", &cmd_uldash, NULL },
+	{ "uldashd", &cmd_uldashd, NULL },
+	{ "uldashdd", &cmd_uldashdd, NULL },
+	{ "uldb", &cmd_uldb, NULL },
+	{ "ulnone", &cmd_ulnone, NULL },
+	{ "ulth", &cmd_ulth, NULL },
+	{ "ulthd", &cmd_ulthd, NULL },
+	{ "ulthdash", &cmd_ulthdash, NULL },
+	{ "ulw", &cmd_ulw, NULL },
+	{ "ulwave", &cmd_ulwave, NULL },
+	{ NULL, NULL, NULL}
+};
 
-static HashItem hashArray_v[] =
-		{
-				{"v", &cmd_v, "Hidden Text"},
-				{NULL, NULL, NULL}};
+static HashItem hashArray_v [] =
+{
+	{ "v", &cmd_v, "Hidden Text" },
+	{ NULL, NULL, NULL }
+};
 
-static HashItem hashArray_w[] =
-		{
-				{"wbmbitspixel", &cmd_wbmbitspixel, NULL},
-				{"wmetafile", &cmd_wmetafile, NULL},
-				{NULL, NULL, NULL}};
+static HashItem hashArray_w [] =
+{
+	{ "wbmbitspixel", &cmd_wbmbitspixel, NULL },
+	{ "wmetafile", &cmd_wmetafile, NULL },
+	{ NULL, NULL, NULL}
+};
 
-static HashItem hashArray_x[] =
-		{
-				{"xe", cmd_xe, "index entry"},
-				{NULL, NULL, NULL}};
+static HashItem hashArray_x [] =
+{
+	{ "xe", cmd_xe, "index entry" },
+	{ NULL, NULL, NULL}
+};
 
-static HashItem *hash[26] =
-		{
-				hashArray_a,
-				hashArray_b,
-				hashArray_c,
-				hashArray_d,
-				hashArray_e,
-				hashArray_f,
-				NULL,
-				hashArray_h,
-				hashArray_i,
-				hashArray_j,
-				NULL,
-				hashArray_l,
-				hashArray_m,
-				hashArray_n,
-				hashArray_o,
-				hashArray_p,
-				NULL,
-				hashArray_r,
-				hashArray_s,
-				hashArray_t,
-				hashArray_u,
-				hashArray_v,
-				hashArray_w,
-				hashArray_x,
-				NULL, NULL};
+static HashItem *hash [26] =
+{
+	hashArray_a,
+	hashArray_b,
+	hashArray_c,
+	hashArray_d,
+	hashArray_e,
+	hashArray_f,
+	NULL,
+	hashArray_h,
+	hashArray_i,
+	hashArray_j,
+	NULL,
+	hashArray_l,
+	hashArray_m,
+	hashArray_n,
+	hashArray_o,
+	hashArray_p,
+	NULL,
+	hashArray_r,
+	hashArray_s,
+	hashArray_t,
+	hashArray_u,
+	hashArray_v,
+	hashArray_w,
+	hashArray_x,
+	NULL, NULL
+};
+
 
 /*-------------------------------------------------------------------*/
 /*-------------------------------------------------------------------*/
@@ -3739,8 +3834,10 @@ static HashItem *find_command(const char *cmdpp, int *hasparamp, int *paramp)
 	return NULL;
 }
 
+
 /*-------------------------------------------------------------------*/
 /*-------------------------------------------------------------------*/
+
 
 /*========================================================================
  * Name:	print_with_special_exprs
@@ -3756,16 +3853,13 @@ static HashItem *find_command(const char *cmdpp, int *hasparamp, int *paramp)
  * Returns:	None.
  *=======================================================================*/
 
-void print_with_special_exprs(const char *s)
+void
+print_with_special_exprs(const char *s)
 {
 	int ch;
 	int state;
 
-	enum
-	{
-		SMALL = 0,
-		BIG = 1
-	};
+	enum { SMALL = 0, BIG = 1 };
 
 	CHECK_PARAM_NOT_NULL(s);
 
@@ -3838,6 +3932,8 @@ void print_with_special_exprs(const char *s)
 	}
 }
 
+
+
 /*========================================================================
  * Name:
  * Purpose:
@@ -3853,14 +3949,16 @@ begin_table()
 	have_printed_cell_begin = FALSE;
 	have_printed_row_end = FALSE;
 	have_printed_cell_end = FALSE;
-	snprintf(table_width, 30, "%i", percentage_calculation(temp_width, 10200));
+	table_width_percent = (temp_width * 100 + (10200 - 1)) / 10200;
+	snprintf(table_width, 30, "%i", table_width_percent);
 	attrstack_push();
 	starting_body();
-	if (safe_printf(1, op->table_begin, table_width))
+	if (safe_printf(1, op->table_begin,table_width))
 	{
 		fprintf(stderr, TOO_MANY_ARGS, "table_begin");
 	}
 }
+
 
 /*========================================================================
  * Name:	end_table
@@ -3869,7 +3967,8 @@ begin_table()
  * Returns:	None.
  *=======================================================================*/
 
-void end_table()
+void
+end_table()
 {
 	if (within_table)
 	{
@@ -3931,7 +4030,8 @@ static void check_for_table()
  * Returns:	None.
  *=======================================================================*/
 
-void starting_text()
+void
+starting_text()
 {
 	if (within_table)
 	{
@@ -3947,7 +4047,20 @@ void starting_text()
 		}
 		if (!have_printed_cell_begin)
 		{
-			table_printer();
+			if(first_row)
+			{
+				first_row = FALSE;
+				contador = 0;
+			}
+			if (contador_td == 0)
+			{
+				td_width_percent = percentage_calculation(td_width[contador_td], temp_width);
+				snprintf(td_width_string, 30, "%i", td_width_percent);
+			} else
+			{
+				td_width_percent = percentage_calculation(td_width[contador_td] - td_width[contador_td - 1], temp_width);
+				snprintf(td_width_string, 30, "%i", td_width_percent);
+			}
 			switch (table_align)
 			{
 			case ALIGN_CENTER:
@@ -3993,12 +4106,13 @@ void starting_text()
  * Returns:	percentage.
  *=======================================================================*/
 
-int percentage_calculation(int value, int one_hundred_percent)
-{
+ int
+ percentage_calculation(int value, int one_hundred_percent)
+ {
 	int percentage;
 	percentage = (value * 100 + (one_hundred_percent - 1)) / one_hundred_percent;
 	return percentage;
-}
+ }
 
 /*========================================================================
  * Name:
@@ -4008,15 +4122,15 @@ int percentage_calculation(int value, int one_hundred_percent)
  *=======================================================================*/
 
 static void
-starting_paragraph_align(int align, char *space_before, char *space_after, char *line_height)
+starting_paragraph_align(int align, char* space_before, char* space_after, char* line_height)
 {
 	char sl_str[30];
 	char padding[30];
 	int default_height = 240;
-	float height = (float)atoi(line_height) / default_height;
+   	float height = (float)atoi(line_height)/default_height;
 	float added_margin = (height - 1) * 12;
 
-	snprintf(sl_str, 30, "%.2f", height);
+ 	snprintf(sl_str, 30, "%.2f", height);
 	snprintf(padding, 30, "%.0f", added_margin);
 
 	if (within_header && align != ALIGN_LEFT)
@@ -4035,19 +4149,21 @@ starting_paragraph_align(int align, char *space_before, char *space_after, char 
 	case ALIGN_LEFT:
 		break;
 	case ALIGN_RIGHT:
-		if (safe_printf(4, op->align_right_begin, space_before, space_after, sl_str, padding))
+		if (safe_printf(4, op->align_right_begin, space_before, space_after, sl_str,padding))
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "align_right_begin");
 		}
 		break;
 	case ALIGN_JUSTIFY:
-		if (safe_printf(4, op->justify_begin, space_before, space_after, sl_str, padding))
+		if (safe_printf(4, op->justify_begin, space_before, space_after, sl_str,padding))
 		{
-			fprintf(stderr, TOO_MANY_ARGS, "justify_begin"); /* But this is correct */
+			fprintf(stderr, TOO_MANY_ARGS, "justify_begin");    /* But this is correct */
 		}
 		break;
 	}
 }
+
+
 
 /*========================================================================
  * Name:
@@ -4084,6 +4200,7 @@ ending_paragraph_align(int align)
 	}
 }
 
+
 #define IIBS 10240
 static char iconv_buffer[IIBS];
 static int iconv_cur = 0;
@@ -4114,7 +4231,7 @@ flush_iconv_input()
 		osiz = IIBS;
 		ocp = obuf;
 		errno = 0;
-		if (my_iconv(desc, &ip, &isiz, &ocp, &osiz) == (size_t)-1 && errno != E2BIG)
+		if (my_iconv(desc, &ip, &isiz, &ocp, &osiz) == (size_t) - 1 && errno != E2BIG)
 		{
 			if (errno == EINVAL)
 			{
@@ -4139,6 +4256,7 @@ flush_iconv_input()
 		}
 		/*        fprintf(stderr, "flush_iconv: ok: isiz %d out %d errno %d\n",
 		          isiz, IIBS - osiz, errno); */
+
 
 		/*        fwrite(obuf, 1, IIBS - osiz, stdout);*/
 		char *out = op_translate_buffer(op, obuf, IIBS - osiz);
@@ -4227,391 +4345,407 @@ word_print_core(Word *w, int groupdepth)
 				/* no op */
 			}
 			else
-					/*--Handle word -----------------------------------*/
-					if (s[0] != '\\')
-			{
-				starting_body();
-				starting_text();
-
-				if (!paragraph_begined && !within_table)
+				/*--Handle word -----------------------------------*/
+				if (s[0] != '\\')
 				{
-					starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
-					paragraph_begined = TRUE;
-				}
-
-				/*----------------------------------------*/
-				if (within_picture)
-				{
-					if (within_picture_depth == 0)
-					{
-						within_picture_depth = groupdepth;
-					}
 					starting_body();
-					if (!pictfile && !nopict_mode)
+					starting_text();
+
+					if (!paragraph_begined && !within_table) 
 					{
-						char *ext = NULL;
-						switch (picture_type)
-						{
-						case PICT_WB:
-							ext = "bmp";
-							break;
-						case PICT_WM:
-							ext = "wmf";
-							break;
-						case PICT_MAC:
-							ext = "pict";
-							break;
-						case PICT_JPEG:
-							ext = "jpg";
-							break;
-						case PICT_PNG:
-							ext = "png";
-							break;
-						case PICT_DI:
-							ext = "dib";
-							break; /* Device independent bitmap=??? */
-						case PICT_PM:
-							ext = "pmm";
-							break; /* OS/2 metafile=??? */
-						case PICT_EMF:
-							ext = "emf";
-							break; /* Enhanced MetaFile */
-						}
-						snprintf(picture_path, 255, "pict%03d.%s",
-										 picture_file_number++, ext);
-						pictfile = fopen(picture_path, "wb");
+						starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
+						paragraph_begined = TRUE;
 					}
 
-					if (s[0] != ' ')
+					/*----------------------------------------*/
+					if (within_picture)
 					{
-						const char *s2;
-						if (safe_printf(0, op->comment_begin))
+						if (within_picture_depth == 0)
 						{
-							fprintf(stderr, TOO_MANY_ARGS, "comment_begin");
+							within_picture_depth = groupdepth;
 						}
-						printf("picture data found, ");
-						if (picture_wmetafile_type_str)
+						starting_body();
+						if (!pictfile && !nopict_mode)
 						{
-							printf("WMF type is %s, ",
-										 picture_wmetafile_type_str);
-						}
-						printf("picture dimensions are %d by %d, depth %d",
-									 picture_width, picture_height, picture_bits_per_pixel);
-						if (safe_printf(0, op->comment_end))
-						{
-							fprintf(stderr, TOO_MANY_ARGS, "comment_end");
-						}
-						if (picture_width && picture_height && picture_bits_per_pixel)
-						{
-							s2 = s;
-							/* Convert hex char pairs. Guard against odd byte count from garbled file */
-							while (*s2 && *(s2 + 1))
+							char *ext = NULL;
+							switch (picture_type)
 							{
-								unsigned int tmp, value;
-								tmp = tolower(*s2++);
-								if (tmp > '9')
+							case PICT_WB:
+								ext = "bmp";
+								break;
+							case PICT_WM:
+								ext = "wmf";
+								break;
+							case PICT_MAC:
+								ext = "pict";
+								break;
+							case PICT_JPEG:
+								ext = "jpg";
+								break;
+							case PICT_PNG:
+								ext = "png";
+								break;
+							case PICT_DI:
+								ext = "dib";
+								break; /* Device independent bitmap=??? */
+							case PICT_PM:
+								ext = "pmm";
+								break; /* OS/2 metafile=??? */
+							case PICT_EMF:
+								ext = "emf";
+								break;  /* Enhanced MetaFile */
+							}
+							snprintf(picture_path, 255, "pict%03d.%s",
+									 picture_file_number++, ext);
+							pictfile = fopen(picture_path, "wb");
+						}
+
+						if (s[0] != ' ')
+						{
+							const char *s2;
+							if (safe_printf(0, op->comment_begin))
+							{
+								fprintf(stderr, TOO_MANY_ARGS, "comment_begin");
+							}
+							printf("picture data found, ");
+							if (picture_wmetafile_type_str)
+							{
+								printf("WMF type is %s, ",
+								       picture_wmetafile_type_str);
+							}
+							printf("picture dimensions are %d by %d, depth %d",
+							       picture_width, picture_height, picture_bits_per_pixel);
+							if (safe_printf(0, op->comment_end))
+							{
+								fprintf(stderr, TOO_MANY_ARGS, "comment_end");
+							}
+							if (picture_width && picture_height && picture_bits_per_pixel)
+							{
+								s2 = s;
+								/* Convert hex char pairs. Guard against odd byte count from garbled file */
+								while (*s2 && *(s2 + 1))
 								{
-									tmp -= ('a' - 10);
-								}
-								else
-								{
-									tmp -= '0';
-								}
-								value = 16 * tmp;
-								tmp = tolower(*s2++);
-								if (tmp > '9')
-								{
-									tmp -= ('a' - 10);
-								}
-								else
-								{
-									tmp -= '0';
-								}
-								value += tmp;
-								if (pictfile)
-								{
-									fprintf(pictfile, "%c", value);
+									unsigned int tmp, value;
+									tmp = tolower(*s2++);
+									if (tmp > '9')
+									{
+										tmp -= ('a' - 10);
+									}
+									else
+									{
+										tmp -= '0';
+									}
+									value = 16 * tmp;
+									tmp = tolower(*s2++);
+									if (tmp > '9')
+									{
+										tmp -= ('a' - 10);
+									}
+									else
+									{
+										tmp -= '0';
+									}
+									value += tmp;
+									if (pictfile)
+									{
+										fprintf(pictfile, "%c", value);
+									}
 								}
 							}
 						}
 					}
+					/*----------------------------------------*/
+					else
+					{
+						total_chars_this_line += strlen(s);
+
+						if (op->word_begin)
+							if (safe_printf(0, op->word_begin))
+							{
+								fprintf(stderr, TOO_MANY_ARGS, "word_begin");
+							}
+
+						print_with_special_exprs(s);
+
+						if (op->word_end)
+							if (safe_printf(0, op->word_end))
+							{
+								fprintf(stderr, TOO_MANY_ARGS, "word_end");
+							}
+					}
+
+
 				}
-				/*----------------------------------------*/
-				else
-				{
-					total_chars_this_line += strlen(s);
-
-					if (op->word_begin)
-						if (safe_printf(0, op->word_begin))
-						{
-							fprintf(stderr, TOO_MANY_ARGS, "word_begin");
-						}
-
-					print_with_special_exprs(s);
-
-					if (op->word_end)
-						if (safe_printf(0, op->word_end))
-						{
-							fprintf(stderr, TOO_MANY_ARGS, "word_end");
-						}
-				}
-			}
 			/* output an escaped backslash */
 			/* do we need special handling for latex? */
 			/* we do for troff where we want the string for 92 */
-			else if (*(s + 1) == '\\')
-			{
-				s++;
-				if ((alias = get_alias(op, 92)) != NULL)
+				else if (*(s + 1) == '\\')
 				{
-					printf("%s", alias);
-				}
-				else
-				{
-					putchar('\\');
-				}
-			}
-			else if (*(s + 1) == '{')
-			{
-				s++;
-				putchar('{');
-			}
-			else if (*(s + 1) == '}')
-			{
-				s++;
-				putchar('}');
-			}
-			/*---Handle RTF keywords---------------------------*/
-			else
-			{
-				s++;
-				/*----Paragraph spacing------------------------------------------------------*/
-				if (!strncmp("sb", s, 2))
-				{
-					while (*s && (!isdigit(*s) && *s != '-'))
+					s++;
+					if ((alias = get_alias(op, 92)) != NULL)
 					{
-						s++;
-					}
-					if (*s && (isdigit(*s) || *s == '-'))
-					{
-						int r = atoi(s) / 20;
-						snprintf(space_before, 30, "%d", r);
-					}
-				}
-				else if (!strncmp("sa", s, 2))
-				{
-					while (*s && (!isdigit(*s) && *s != '-'))
-					{
-						s++;
-					}
-					if (*s && (isdigit(*s) || *s == '-'))
-					{
-						int r = atoi(s) / 20;
-						snprintf(space_after, 30, "%d", r);
-					}
-				}
-				else if (!strncmp("sl", s, 2) && strncmp("slmult", s, 6))
-				{
-					while (*s && (!isdigit(*s) && *s != '-'))
-					{
-						s++;
-					}
-					if (*s && (isdigit(*s) || *s == '-'))
-					{
-						int r = atoi(s);
-						snprintf(line_height, 30, "%d", r);
-					}
-				}
-				/*----Paragraph alignment----------------------------------------------------*/
-				if (!strcmp("ql", s))
-				{
-					paragraph_align = ALIGN_LEFT;
-					table_align = paragraph_align;
-				}
-				else if (!strcmp("qr", s))
-				{
-					paragraph_align = ALIGN_RIGHT;
-					table_align = paragraph_align;
-				}
-				else if (!strcmp("qj", s))
-				{
-					paragraph_align = ALIGN_JUSTIFY;
-					table_align = paragraph_align;
-				}
-				else if (!strcmp("qc", s))
-				{
-					paragraph_align = ALIGN_CENTER;
-					table_align = paragraph_align;
-				}
-				else if (!strcmp("plain", s))
-				{
-					attr_pop_all();
-				}
-				else if (!strcmp("pard", s))
-				{
-					/* Clear out all font attributes.
-						 */
-					attr_pop_all();
-
-					if (coming_pars_that_are_tabular)
-					{
-						--coming_pars_that_are_tabular;
-					}
-
-					/* Clear out all paragraph attributes.
-						 */
-					if (!within_table)
-					{
-						ending_paragraph_align(paragraph_align);
-					}
-					paragraph_align = ALIGN_LEFT;
-					table_align = paragraph_align;
-					snprintf(space_before, 30, "%d", 0);
-					snprintf(space_after, 30, "%d", 0);
-					snprintf(line_height, 30, "%d", 240);
-					paragraph_begined = FALSE;
-				}
-				/*----Table keywords---------------------------------------------------------*/
-				else if (!strcmp(s, "cell"))
-				{
-
-					is_cell_group = TRUE;
-					if (have_printed_row_end)
-					{
-						if (safe_printf(0, op->table_row_begin))
-						{
-							fprintf(stderr, TOO_MANY_ARGS, "table_row_begin");
-						}
-						have_printed_row_begin = TRUE;
-						have_printed_row_end = FALSE;
-					}
-					if (!have_printed_cell_begin)
-					{
-						table_printer();
-						switch (table_align)
-						{
-						case ALIGN_CENTER:
-							if (safe_printf(2, op->table_cell_begin, "center", td_width_string))
-							{
-								fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
-							}
-							contador_td++;
-							break;
-						case ALIGN_LEFT:
-							if (safe_printf(2, op->table_cell_begin, "left", td_width_string))
-							{
-								fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
-							}
-							contador_td++;
-							break;
-						case ALIGN_RIGHT:
-							if (safe_printf(2, op->table_cell_begin, "right", td_width_string))
-							{
-								fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
-							}
-							contador_td++;
-							break;
-						case ALIGN_JUSTIFY:
-							if (safe_printf(2, op->table_cell_begin, "justify", td_width_string))
-							{
-								fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
-							}
-							contador_td++;
-							break;
-						}
-						attrstack_express_all();
-					}
-					attr_pop_all();
-					if (safe_printf(0, op->table_cell_end))
-					{
-						fprintf(stderr, TOO_MANY_ARGS, "table_cell_end");
-					}
-					have_printed_cell_begin = FALSE;
-					have_printed_cell_end = TRUE;
-				}
-				else if (!strcmp(s, "row"))
-				{
-
-					if (within_table)
-					{
-						if (safe_printf(0, op->table_row_end))
-						{
-							fprintf(stderr, TOO_MANY_ARGS, "table_row_end");
-						}
-						have_printed_row_begin = FALSE;
-						have_printed_row_end = TRUE;
-						contador_td = 0;
+						printf("%s", alias);
 					}
 					else
 					{
-						if (debug_mode)
+						putchar('\\');
+					}
+				}
+				else if (*(s + 1) == '{')
+				{
+					s++;
+					putchar('{');
+				}
+				else if (*(s + 1) == '}')
+				{
+					s++;
+					putchar('}');
+				}
+			/*---Handle RTF keywords---------------------------*/
+				else
+				{
+					s++;
+					/*----Paragraph spacing------------------------------------------------------*/
+					if (!strncmp("sb", s, 2))
+					{
+						while (*s && (!isdigit(*s) && *s != '-'))
 						{
-							if (safe_printf(0, op->comment_begin))
+							s++;
+						}
+						if (*s && (isdigit(*s) || *s == '-'))
+						{
+							int r = atoi(s)/20;
+							snprintf(space_before, 30, "%d", r);
+						}
+					}
+					else if (!strncmp("sa", s, 2))
+					{
+						while (*s && (!isdigit(*s) && *s != '-'))
+						{
+							s++;
+						}
+						if (*s && (isdigit(*s) || *s == '-'))
+						{
+							int r = atoi(s)/20;
+							snprintf(space_after, 30, "%d", r);
+						}
+					}
+					else if (!strncmp("sl", s, 2) && strncmp("slmult", s, 6))
+					{
+						while (*s && (!isdigit(*s) && *s != '-'))
+						{
+							s++;
+						}
+						if (*s && (isdigit(*s) || *s == '-'))
+						{
+							int r = atoi(s);
+							snprintf(line_height, 30, "%d", r);							
+						}
+					}
+					/*----Paragraph alignment----------------------------------------------------*/
+					if (!strcmp("ql", s))
+					{
+						paragraph_align = ALIGN_LEFT;
+						table_align = paragraph_align;
+					}
+					else if (!strcmp("qr", s))
+					{
+						paragraph_align = ALIGN_RIGHT;
+						table_align = paragraph_align;
+					}
+					else if (!strcmp("qj", s))
+					{
+						paragraph_align = ALIGN_JUSTIFY;
+						table_align = paragraph_align;
+					}
+					else if (!strcmp("qc", s))
+					{
+						paragraph_align = ALIGN_CENTER;
+						table_align = paragraph_align;
+					}
+					else if (!strcmp("plain", s))
+					{
+						attr_pop_all();
+					}
+					else if (!strcmp("pard", s))
+					{
+						/* Clear out all font attributes.
+						 */
+						attr_pop_all();
+
+						if (coming_pars_that_are_tabular)
+						{
+							--coming_pars_that_are_tabular;
+						}
+
+						/* Clear out all paragraph attributes.
+						 */
+						if (!within_table) 
+						{
+							ending_paragraph_align(paragraph_align);
+						}
+						paragraph_align = ALIGN_LEFT;
+						table_align = paragraph_align;
+            snprintf(space_before, 30, "%d", 0);
+            snprintf(space_after, 30, "%d", 0);
+			snprintf(line_height, 30, "%d", 240);
+            paragraph_begined = FALSE;
+					}
+					/*----Table keywords---------------------------------------------------------*/
+					else if (!strcmp(s, "cell"))
+					{
+
+						is_cell_group = TRUE;
+						if (have_printed_row_end)
+						{
+							if (safe_printf(0, op->table_row_begin))
 							{
-								fprintf(stderr, TOO_MANY_ARGS, "comment_begin");
+								fprintf(stderr, TOO_MANY_ARGS, "table_row_begin");
 							}
-							printf("end of table row");
-							if (safe_printf(0, op->comment_end))
+							have_printed_row_begin = TRUE;
+							have_printed_row_end = FALSE;
+						}
+						if (!have_printed_cell_begin)
+						{
+							if(first_row)
 							{
-								fprintf(stderr, TOO_MANY_ARGS, "comment_end");
+								first_row = FALSE;
+								contador = 0;
+							}
+							if (contador_td == 0)
+							{
+								td_width_percent = percentage_calculation(td_width[contador_td], temp_width);
+								snprintf(td_width_string, 30, "%i", td_width_percent);
+							} else
+							{
+								td_width_percent = percentage_calculation(td_width[contador_td] - td_width[contador_td - 1], temp_width);
+								snprintf(td_width_string, 30, "%i", td_width_percent);
+							}
+							switch (table_align)
+							{
+								case ALIGN_CENTER:
+									if (safe_printf(2, op->table_cell_begin, "center", td_width_string))
+									{
+										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+									}
+									contador_td++;
+									break;
+								case ALIGN_LEFT:
+									if (safe_printf(2, op->table_cell_begin, "left", td_width_string))
+									{
+										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+									}
+									contador_td++;
+									break;
+								case ALIGN_RIGHT:
+									if (safe_printf(2, op->table_cell_begin, "right", td_width_string))
+									{
+										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+									}
+									contador_td++;
+									break;
+								case ALIGN_JUSTIFY:
+									if (safe_printf(2, op->table_cell_begin, "justify", td_width_string))
+									{
+										fprintf(stderr, TOO_MANY_ARGS, "table_cell_begin");
+									}
+									contador_td++;
+									break;
+							}
+							attrstack_express_all();
+						}
+						attr_pop_all();
+						if (safe_printf(0, op->table_cell_end))
+						{
+							fprintf(stderr, TOO_MANY_ARGS, "table_cell_end");
+						}
+						have_printed_cell_begin = FALSE;
+						have_printed_cell_end = TRUE;
+					}
+					else if (!strcmp(s, "row"))
+					{
+
+						if (within_table)
+						{
+							if (safe_printf(0, op->table_row_end))
+							{
+								fprintf(stderr, TOO_MANY_ARGS, "table_row_end");
+							}
+							have_printed_row_begin = FALSE;
+							have_printed_row_end = TRUE;
+							contador_td = 0;
+						}
+						else
+						{
+							if (debug_mode)
+							{
+								if (safe_printf(0, op->comment_begin))
+								{
+									fprintf(stderr, TOO_MANY_ARGS, "comment_begin");
+								}
+								printf("end of table row");
+								if (safe_printf(0, op->comment_end))
+								{
+									fprintf(stderr, TOO_MANY_ARGS, "comment_end");
+								}
 							}
 						}
 					}
-				}
 
-				/*----Special chars---------------------------------------------------------*/
-				else if (*s == '\'' && s[1] && s[2])
-				{
-					/* \'XX is a hex char code expression */
-
-					int ch = h2toi(&s[1]);
-					accumulate_iconv_input(ch);
-				}
-				else
-				/*----Search the RTF command hash-------------------------------------------*/
-				{
-					int have_param = FALSE, param = 0;
-					HashItem *hip = find_command(s, &have_param, &param);
-					if (hip)
+					/*----Special chars---------------------------------------------------------*/
+					else if (*s == '\'' && s[1] && s[2])
 					{
-						int terminate_group;
+						/* \'XX is a hex char code expression */
 
-						if (hip->func)
+						int ch = h2toi(&s[1]);
+						accumulate_iconv_input(ch);
+					}
+					else
+						/*----Search the RTF command hash-------------------------------------------*/
+					{
+						int have_param = FALSE, param = 0;
+						HashItem *hip = find_command(s, &have_param, &param);
+						if (hip)
 						{
-							if (!paragraph_begined && !within_table)
-							{
-								starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
-								paragraph_begined = TRUE;
-							}
+							int terminate_group;
 
-							terminate_group = hip->func(w, paragraph_align, have_param, param);
-							/* daved - 0.19.4 - unicode support may need to skip only one word */
-							if (terminate_group == SKIP_ONE_WORD)
-							{
-								w = w->next;
-							}
-							else if (terminate_group)
-								while (w)
+							if (hip->func)
+              {
+                if (!paragraph_begined && !within_table)
+                {
+                  starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
+                  paragraph_begined = TRUE;
+                }
+
+								terminate_group = hip->func(w, paragraph_align, have_param, param);
+								/* daved - 0.19.4 - unicode support may need to skip only one word */
+								if (terminate_group == SKIP_ONE_WORD)
 								{
 									w = w->next;
 								}
-						}
+								else if (terminate_group)
+									while (w)
+									{
+										w = w->next;
+									}
+							}
 
-						if (hip->debug_print && debug_mode)
-						{
-							if (safe_printf(0, op->comment_begin))
+							if (hip->debug_print && debug_mode)
 							{
-								fprintf(stderr, TOO_MANY_ARGS, "comment_begin");
+								if (safe_printf(0, op->comment_begin))
+								{
+									fprintf(stderr, TOO_MANY_ARGS, "comment_begin");
+								}
+								printf("%s", hip->debug_print);
+								if (safe_printf(0, op->comment_end))
+								{
+									fprintf(stderr, TOO_MANY_ARGS, "comment_end");
+								}
 							}
-							printf("%s", hip->debug_print);
-							if (safe_printf(0, op->comment_end))
-							{
-								fprintf(stderr, TOO_MANY_ARGS, "comment_end");
-							}
+
 						}
 					}
 				}
-			}
 			/*-------------------------------------------------------------------------*/
 		}
 		else
@@ -4623,11 +4757,11 @@ word_print_core(Word *w, int groupdepth)
 
 			if (child)
 			{
-				if ((!paragraph_begined || !have_printed_body) && !within_table)
-				{
-					starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
-					paragraph_begined = TRUE;
-				}
+        if ((!paragraph_begined || !have_printed_body) && !within_table)
+        {
+          starting_paragraph_align(paragraph_align, space_before, space_after, line_height);
+          paragraph_begined = TRUE;
+        }
 				word_print_core(child, groupdepth + 1);
 			}
 		}
@@ -4656,6 +4790,7 @@ word_print_core(Word *w, int groupdepth)
 		}
 		within_picture = FALSE;
 	}
+
 
 	/* Undo font attributes UNLESS we're doing table cells
 	 * since they would appear between </td> and </tr>.
@@ -4695,6 +4830,7 @@ word_print_core(Word *w, int groupdepth)
 	set_current_encoding(encoding);
 }
 
+
 /*========================================================================
  * Name:
  * Purpose:
@@ -4702,7 +4838,8 @@ word_print_core(Word *w, int groupdepth)
  * Returns:	None.
  *=======================================================================*/
 
-void word_print(Word *w)
+void
+word_print(Word *w)
 {
 	CHECK_PARAM_NOT_NULL(w);
 
@@ -4722,7 +4859,7 @@ void word_print(Word *w)
 		}
 	}
 
-	if (!quiet)
+	if (!quiet) 
 	{
 		print_banner();
 	}
@@ -4744,31 +4881,5 @@ void word_print(Word *w)
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "document_end");
 		}
-	}
-}
-
-/*========================================================================
- * Name: table_printer
- * Purpose: To print out the table according to the width in percentage.
- * Args:	None.
- * Returns:	None.
- *=======================================================================*/
-
-void table_printer()
-{
-	if (first_row)
-	{
-		first_row = FALSE;
-		contador = 0;
-	}
-	if (contador_td == 0)
-	{
-		td_width_percent = percentage_calculation(td_width[contador_td], temp_width);
-		snprintf(td_width_string, 30, "%i", td_width_percent);
-	}
-	else
-	{
-		td_width_percent = percentage_calculation(td_width[contador_td] - td_width[contador_td - 1], temp_width);
-		snprintf(td_width_string, 30, "%i", td_width_percent);
 	}
 }

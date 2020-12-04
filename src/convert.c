@@ -205,7 +205,7 @@ static const char *hyperlink_base = NULL;
 void starting_body();
 void starting_text();
 void print_with_special_exprs(const char *s);
-int percentage_calculation(int value, int one_hundred_percent);
+int percentage_calculation(int value, int total_value);
 void print_table();
 
 
@@ -4090,15 +4090,15 @@ starting_text()
 /*========================================================================
  * Name: percentage_calculation
  * Purpose: Percentage calculation
- * Args:	value and one_hundred_percent.
+ * Args:	value and total_value.
  * Returns:	percentage.
  *=======================================================================*/
 
  int
- percentage_calculation(int value, int one_hundred_percent)
+ percentage_calculation(int value, int total_value)
  {
 	int percentage;
-	percentage = (value * 100 + (one_hundred_percent - 1)) / one_hundred_percent;
+	percentage = (value * 100 + (total_value - 1)) / total_value;
 	return percentage;
  }
 

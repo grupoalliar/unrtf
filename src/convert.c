@@ -4135,6 +4135,10 @@ starting_paragraph_align(int align, char* space_before, char* space_after, char*
 		}
 		break;
 	case ALIGN_LEFT:
+		if (safe_printf(4, op->align_left_begin, space_before, space_after, sl_str,padding))
+		{
+			fprintf(stderr, TOO_MANY_ARGS, "align_left_begin");
+		}
 		break;
 	case ALIGN_RIGHT:
 		if (safe_printf(4, op->align_right_begin, space_before, space_after, sl_str,padding))
@@ -4172,6 +4176,10 @@ ending_paragraph_align(int align)
 		}
 		break;
 	case ALIGN_LEFT:
+		if (safe_printf(0, op->align_left_end))
+		{
+			fprintf(stderr, TOO_MANY_ARGS, "align_left_end");
+		}
 		break;
 	case ALIGN_RIGHT:
 		if (safe_printf(0, op->align_right_end))

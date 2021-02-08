@@ -4121,7 +4121,7 @@ starting_paragraph_align(int align, char* space_before, char* space_after, char*
  	snprintf(sl_str, 30, "%.2f", height);
 	snprintf(padding, 30, "%.0f", added_margin);
 
-	if (within_header && align != ALIGN_LEFT)
+	if (within_header)
 	{
 		starting_body();
 	}

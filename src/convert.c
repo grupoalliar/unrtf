@@ -222,6 +222,7 @@ int contador_td = 0;
 int td_width_percent = 0;
 int td_width[30];
 int first_row = FALSE;
+int within_align_left = FALSE;
 /*========================================================================
  * Name:	print_banner
  * Purpose:	Writes program-identifying text to the output stream.
@@ -4135,10 +4136,14 @@ starting_paragraph_align(int align, char* space_before, char* space_after, char*
 		}
 		break;
 	case ALIGN_LEFT:
+		if (within_align_left){
+			break;
+		}
 		if (safe_printf(4, op->align_left_begin, space_before, space_after, sl_str,padding))
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "align_left_begin");
 		}
+		within_align_left = TRUE;
 		break;
 	case ALIGN_RIGHT:
 		if (safe_printf(4, op->align_right_begin, space_before, space_after, sl_str,padding))
@@ -4180,6 +4185,7 @@ ending_paragraph_align(int align)
 		{
 			fprintf(stderr, TOO_MANY_ARGS, "align_left_end");
 		}
+		within_align_left = FALSE;
 		break;
 	case ALIGN_RIGHT:
 		if (safe_printf(0, op->align_right_end))
@@ -4790,7 +4796,7 @@ word_print_core(Word *w, int groupdepth)
 
 	/* Undo paragraph alignment
 	 */
-	if (paragraph_begined && !within_table)
+	if (paragraph_begined && !within_table && !within_align_left)
 	{
 		ending_paragraph_align(paragraph_align);
 	}

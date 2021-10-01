@@ -4649,6 +4649,7 @@ word_print_core(Word *w, int groupdepth)
 							have_printed_row_begin = FALSE;
 							have_printed_row_end = TRUE;
 							contador_td = 0;
+							contador = 0;
 						}
 						else
 						{
